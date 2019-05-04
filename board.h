@@ -8,13 +8,14 @@
 
 class Board
 {
-    const int size = 8;
-    vector<Field *> board;
+    static const int size = 8;
+    std::vector<Field *> board;
 
 
 public:
     Board();
     Field *getField(int row, int col);
+
 };
 
 #endif // BOARD_H

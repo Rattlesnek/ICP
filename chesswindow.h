@@ -6,6 +6,8 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
+#include "board.h"
+
 namespace Ui {
 class ChessWindow;
 }
@@ -22,6 +24,11 @@ private:
     Ui::ChessWindow *ui;
     QGraphicsScene *scene;
     QGraphicsView *view;
+    Board board;
+
+public slots:
+    void slotFieldPressed(int x, int y);
+
 };
 
 #endif // CHESSWINDOW_H

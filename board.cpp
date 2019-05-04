@@ -1,5 +1,6 @@
 #include "board.h"
 #include "field.h"
+#include <QDebug>
 
 Board::Board() :
     board{size * size}
@@ -12,3 +13,7 @@ Board::Board() :
 Field *Board::getField(int row, int col) {
     return board[row * size + col];
 }
+
+
+
+

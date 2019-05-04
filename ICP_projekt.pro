@@ -30,14 +30,16 @@ SOURCES += \
     chesswindow.cpp \
     field.cpp \
     figure.cpp \
-    board.cpp
+    board.cpp \
+    fieldview.cpp
 
 HEADERS += \
         mainwindow.h \
     chesswindow.h \
     field.h \
     figure.h \
-    board.h
+    board.h \
+    fieldview.h
 
 FORMS += \
         mainwindow.ui \
@@ -47,3 +49,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    res.qrc

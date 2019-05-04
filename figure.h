@@ -13,4 +13,34 @@ public:
     bool move(Field field);
 };
 
+class King : Figure
+{
+
+};
+
+class Queen : Figure
+{
+
+};
+
+class Bishop : Figure
+{
+
+};
+
+class Knight : Figure
+{
+
+};
+
+class Rook : Figure
+{
+
+};
+
+class Pawn : Figure
+{
+
+};
+
 #endif // FIGURE_H
