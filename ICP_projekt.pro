@@ -31,6 +31,7 @@ SOURCES += \
     field.cpp \
     figure.cpp \
     board.cpp \
+    square.cpp \
     fieldview.cpp
 
 HEADERS += \
@@ -39,6 +40,7 @@ HEADERS += \
     field.h \
     figure.h \
     board.h \
+    square.h \
     fieldview.h
 
 FORMS += \
