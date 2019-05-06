@@ -16,7 +16,7 @@ namespace Ui {
 class ChessWindow;
 }
 
-class ChessWindow : public QDialog
+class ChessWindow : public QWidget
 {
     Q_OBJECT
 

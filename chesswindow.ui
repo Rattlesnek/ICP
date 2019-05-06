@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>860</width>
-    <height>603</height>
+    <width>537</width>
+    <height>476</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -39,11 +39,30 @@
       <widget class="QTextEdit" name="log"/>
      </item>
      <item>
+      <widget class="QSlider" name="horizontalSlider">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="singleStep">
+        <number>10</number>
+       </property>
+       <property name="sliderPosition">
+        <number>50</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
       <layout class="QGridLayout" name="optionGridLayout">
        <item row="1" column="0">
         <widget class="QPushButton" name="automatic">
          <property name="text">
-          <string>&lt; Step</string>
+          <string>&lt; Back</string>
          </property>
         </widget>
        </item>

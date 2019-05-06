@@ -12,17 +12,18 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+    int counter;
+
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 public slots:
     void newChessWindow();
+    void deleteChessWindow();
 
 private:
     Ui::MainWindow *ui;
-    ChessWindow *chessWindowDialog;
-
 };
 
 #endif // MAINWINDOW_H

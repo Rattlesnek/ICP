@@ -5,11 +5,25 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
+    counter{0},
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    connect(ui->play, SIGNAL(released()), this, SLOT(newChessWindow()));
+    //remove unused tab
+    ui->tabWidget->removeTab(0);
+    ui->tabWidget->removeTab(0);
+
+    //start game
+    newChessWindow();
+    /*
+    chessWindowDialog = new ChessWindow(this);
+    chessWindowDialog->show();
+    ui->tabWidget->addTab(chessWindowDialog, "chess1");
+*/
+    connect(ui->new_game, SIGNAL(aboutToShow()), this, SLOT(newChessWindow()));
+
+    connect(ui->delete_game, SIGNAL(aboutToShow()), this, SLOT(deleteChessWindow()));
 
 }
 
@@ -20,7 +34,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::newChessWindow()
 {
-    qDebug() << "play";
-    chessWindowDialog = new ChessWindow(this);
+    counter++;
+
+    QWidget *chessWindowDialog = new ChessWindow(this);
     chessWindowDialog->show();
+
+    ui->tabWidget->addTab(chessWindowDialog, "chess " + QString::number(counter));
+
+
+
+    ui->tabWidget->setCurrentIndex(ui->tabWidget->count()-1);
 }
+
+void MainWindow::deleteChessWindow()
+{
+    //ui->tabWidget->removeTab()
+    qDebug() <<  ui->tabWidget->currentIndex();
+
+    ui->tabWidget->removeTab(ui->tabWidget->currentIndex());
+}
+
+

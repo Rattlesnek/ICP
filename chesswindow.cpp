@@ -17,7 +17,7 @@ const int SCENE_WIDTH = 600;
 const int SCENE_HEIGHT = 600;
 
 ChessWindow::ChessWindow(QWidget *parent) :
-    QDialog(parent, Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
+    QWidget(parent),
     ui(new Ui::ChessWindow)
 {
     ui->setupUi(this);
