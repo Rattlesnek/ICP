@@ -21,9 +21,15 @@ public:
 public slots:
     void newChessWindow();
     void deleteChessWindow();
+    void loadChessWindow();
+    void saveChessWindow();
+
 
 private:
     Ui::MainWindow *ui;
+
+    void getFigure(QString str);
+    void getStartX(QString str);
 };
 
 #endif // MAINWINDOW_H
