@@ -8,7 +8,9 @@
 #include <QDebug>
 
 
-Field::Field()
+Field::Field(int _row, int _col) :
+    row{_row}, col{_col},
+    topField{nullptr}, botField{nullptr}, rightField{nullptr}, leftField{nullptr}
 {
 }
 
@@ -42,5 +44,27 @@ bool Field::remove(Figure *fig)
     }
     else {
         return false;
+    }
+}
+
+Field *Field::getNext(Direction dir)
+{
+    switch (dir) {
+        case topDir:
+            return topField;
+        case rightDir:
+            return rightField;
+        case botDir:
+            return botField;
+        case leftDir:
+            return leftField;
+        case topLeftDir:
+            return topField->getNext(leftDir);
+        case topRightDir:
+            return topField->getNext(rightDir);
+        case botLeftDir:
+            return botField->getNext(leftDir);
+        case botRightDir:
+            return botField->getNext(rightDir);
     }
 }

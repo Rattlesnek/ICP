@@ -32,7 +32,9 @@ SOURCES += \
     figure.cpp \
     board.cpp \
     square.cpp \
-    fieldview.cpp
+    fieldview.cpp \
+    controller.cpp \
+    boardview.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -41,7 +43,9 @@ HEADERS += \
     figure.h \
     board.h \
     square.h \
-    fieldview.h
+    fieldview.h \
+    controller.h \
+    boardview.h
 
 FORMS += \
         mainwindow.ui \

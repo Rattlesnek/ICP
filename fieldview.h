@@ -31,6 +31,7 @@ public:
     void setPos(double x, double y);
     void addToScene(QGraphicsScene *scene);
     void setState(std::vector<QPixmap> &pixmaps, State _state);
+    void setActive(bool active);
 
 signals:
     void signalFieldViewPressed(int row, int col, bool active);

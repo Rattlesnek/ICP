@@ -9,8 +9,8 @@
 
 #include <vector>
 
-#include "fieldview.h"
-#include "board.h"
+#include "boardview.h"
+#include "controller.h"
 
 namespace Ui {
 class ChessWindow;
@@ -22,23 +22,15 @@ class ChessWindow : public QWidget
 
     Ui::ChessWindow *ui;
     QGraphicsScene *scene;
-    QGraphicsView *view;
-    Board board;
 
-    std::vector<QPixmap> pixmaps; // vector of pixmaps of figures
-    std::vector<FieldView *> fieldviews; // vector of fields
+    BoardView boardView;
+    Controller controller;
+
+
 
 public:
     explicit ChessWindow(QWidget *parent = nullptr);
     ~ChessWindow();
-
-    void createBoard();
-    void preparePixmaps();
-    void setBoardInitialState();
-    FieldView *getFieldView(int row, int col);
-
-public slots:
-    void slotFieldViewPressed(int row, int col, bool active);
 
 };
 

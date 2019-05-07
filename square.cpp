@@ -22,7 +22,7 @@ void Square::setOriginalColor(bool isWhite)
         setColor(Qt::white);
     }
     else {
-        setColor(Qt::black);
+        setColor(Qt::darkGray);
     }
 }
 

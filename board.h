@@ -13,9 +13,13 @@ class Board
 
 
 public:
+
+    class OutOfBoard {};
+
     Board();
     Field *getField(int row, int col);
-
+//    void checkAllMoves(Field *from);
+//    void setInitialState();
 };
 
 #endif // BOARD_H

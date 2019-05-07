@@ -60,6 +60,11 @@ void FieldView::setState(std::vector<QPixmap> &pixmaps, State new_state)
     state = new_state;
 }
 
+void FieldView::setActive(bool active)
+{
+    square->setActive(active);
+}
+
 void FieldView::slotSquarePressed(bool active)
 {
     // TODO

@@ -10,37 +10,48 @@ class Figure
 
 public:
     Figure(bool isWhite);
-    bool move(Field field);
+    bool isWhite();
+    bool checkMove(Field *from, Field *to);
 };
 
-class King : Figure
-{
 
+
+
+
+class King : public Figure
+{
+public:
+    bool checkMove(Field *from, Field *to);
 };
 
-class Queen : Figure
+class Queen : public Figure
 {
-
+public:
+    bool checkMove(Field *from, Field *to);
 };
 
-class Bishop : Figure
+class Bishop : public Figure
 {
-
+public:
+    bool checkMove(Field *from, Field *to);
 };
 
-class Knight : Figure
+class Knight : public Figure
 {
-
+public:
+    bool checkMove(Field *from, Field *to);
 };
 
-class Rook : Figure
+class Rook : public Figure
 {
-
+public:
+    bool checkMove(Field *from, Field *to);
 };
 
-class Pawn : Figure
+class Pawn : public Figure
 {
-
+public:
+    bool checkMove(Field *from, Field *to);
 };
 
 #endif // FIGURE_H

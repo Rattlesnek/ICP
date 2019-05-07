@@ -3,20 +3,29 @@
 
 #include "figure.h"
 
+enum Direction { topDir, topRightDir, rightDir, botRightDir, botDir, botLeftDir, leftDir, topLeftDir };
 
 class Field
 {
 
-
+public:
+    int row;
+    int col;
     Figure *figure;
 
+    Field *topField;
+    Field *botField;
+    Field *rightField;
+    Field *leftField;
+
 public:
-    Field();
+    Field(int row, int col);
 
     Figure *get();
     bool isEmpty();
     bool put(Figure *fig);
     bool remove(Figure *fig);
+    Field *getNext(Direction dir);
 
 };
 
