@@ -43,30 +43,6 @@
      <height>20</height>
     </rect>
    </property>
-   <widget class="QMenu" name="new_game">
-    <property name="title">
-     <string>New</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="load_game">
-    <property name="title">
-     <string>Load </string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="save_game">
-    <property name="title">
-     <string>Save</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="delete_game">
-    <property name="title">
-     <string>Delete</string>
-    </property>
-   </widget>
-   <addaction name="new_game"/>
-   <addaction name="load_game"/>
-   <addaction name="save_game"/>
-   <addaction name="delete_game"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
