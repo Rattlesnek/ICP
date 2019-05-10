@@ -22,7 +22,6 @@ public:
     void preparePixmaps();
     void createBoard(QGraphicsScene *scene);
     FieldView *getFieldView(int row, int col);
-    void moveFigureFieldView(FieldView *from, FieldView *to);
     void setActiveFieldView(bool active, int row, int col);
     void setStateFieldView(State state, int row, int col);
 

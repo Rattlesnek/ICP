@@ -4,14 +4,14 @@
 
 #include <QDebug>
 
-Controller::Controller(BoardView *_boardView) :
+Controller::Controller(BoardView *_boardView, int _index) :
     boardView{_boardView},
-    fieldReady{nullptr}
+    fieldReady{nullptr},
+    index{_index}
 {
     board.setInitialState();
 
     loadInitialState();
-    qDebug() << "load state";
 }
 
 void Controller::loadInitialState()
@@ -23,7 +23,6 @@ void Controller::loadInitialState()
         }
 
         State stt = fig->getType();
-        qDebug() << "figure get" << stt;
         boardView->setStateFieldView(stt, field->row, field->col);
     }
 }
@@ -60,6 +59,73 @@ void Controller::applyStateOfField(Field *field)
     }
 }
 
+void Controller::executeOperation(bool backward)
+{
+    LogList list = log[index];
+
+    Field *from = board.getField(list.row_start, list.col_start);
+    Field *to = board.getField(list.row_end, list.col_end);
+
+    qDebug() << "from " << from->row << ' ' << from->col;
+    qDebug() << "to " << to->row << ' ' << to->col;
+
+
+    if (backward) {
+        to->moveFig(from);
+    }
+    else {
+        from->moveFig(to);
+    }
+
+    applyStateOfField(to);
+    applyStateOfField(from);
+}
+
+void Controller::addLog(State figure, int row_start, int col_start, int row_end, int col_end, State kick, State swap)
+{
+    if (index < log.size()) {
+        log.erase(log.begin() + index, log.end());
+    }
+
+    // if index points to the end of loglist then normally add new loglist and increment index
+    log.push_back(LogList(figure, row_start, col_start, row_end, col_end, kick, swap));
+    index++;
+
+    qDebug() << "size: " << log.size() << " index " << index;
+}
+
+void Controller::back()
+{
+    deactivateAllFields();
+
+    if (index-1 < 0) {
+        return;
+    }
+    else {
+        index--;
+        executeOperation(true);
+        qDebug() << "size: " << log.size() << " back " << index;
+    }
+}
+
+
+void Controller::next()
+{
+    deactivateAllFields();
+
+    if (index == log.size()) {
+        return;
+    }
+    else {
+        executeOperation(false);
+        index++;
+        qDebug() << "size: " << log.size() << " next " << index;
+    }
+}
+
+
+
+
 void Controller::slotBoardViewPressed(int row, int col, bool active)
 {
     qDebug() << "signal from BoardView recv in Controller " << row << " " << col << " " << active;
@@ -68,12 +134,9 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
     Field *field = board.getField(row, col);
     Figure *fig = field->getFig();
 
-
     if (fieldReady == nullptr) {
         // no field is ready to move
-
         if (fig != nullptr) {
-            qDebug() << "activate possible fields";
             // store field that is ready -- figure is ready to move
             fieldReady = field;
             // activate all possible fieldviews -- turn on red
@@ -89,20 +152,22 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
             // deactivate all fieldviews -- turn off red
             deactivateAllFields();
 
-            // move picture
+            State movedFigType = fieldReady->getFig()->getType();
+            State kickedFigType = empty;
 
+            // move figure
             Figure *kickedFig = fieldReady->moveFig(field);
             if (kickedFig != nullptr) {
                 // delete kicked figure
+                kickedFigType = kickedFig->getType();
                 delete kickedFig; // TODO it should be stored somewhere
             }
             applyStateOfField(fieldReady);
             applyStateOfField(field);
 
-            /*
-            FieldView *toFieldView = boardView->getFieldView(row, col);
-            FieldView *fromFieldView = boardView->getFieldView(fieldReady->row, fieldReady->col);
-            boardView->moveFigureFieldView(fromFieldView, toFieldView);*/
+
+            addLog(movedFigType, fieldReady->row, fieldReady->col, field->row, field->col, kickedFigType, empty);
+
 
             // field moved and now there is none
             fieldReady = nullptr;
@@ -115,5 +180,5 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
 
             fieldReady = nullptr;
         }
-    }
+    }    
 }

@@ -6,14 +6,14 @@
 class LogList
 {
 public:
-    LogList(State _figure, int _x_start, int _y_start,
-                    int _x_end, int _y_end, State _kick, State _swap);
+    LogList(State _figure, int _row_start, int _col_start,
+                    int _row_end, int _col_end, State _kick, State _swap);
 
     State figure; //type of figure
-    int x_start; //x start coordinate
-    int y_start; //y start coordinate
-    int x_end; //x end coordinate
-    int y_end; //y end cordinate
+    int row_start; //x start coordinate
+    int col_start; //y start coordinate
+    int row_end; //x end coordinate
+    int col_end; //y end cordinate
     State kick; //what figure was kicked
     State swap; //new swapped figure
 };

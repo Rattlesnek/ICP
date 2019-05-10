@@ -21,7 +21,7 @@ ChessWindow::ChessWindow(QWidget *parent) :
     ui(new Ui::ChessWindow),
     scene{new QGraphicsScene()},
     boardView{scene},
-    controller{&boardView},
+    controller{&boardView, 0},
     timer{2500}
 {
     ui->setupUi(this);
@@ -59,6 +59,7 @@ void ChessWindow::automaticPressed()
 void ChessWindow::backPressed()
 {
     qDebug() << "backPressed()";
+    controller.back();
 }
 
 void ChessWindow::manualPressed()
@@ -69,6 +70,7 @@ void ChessWindow::manualPressed()
 void ChessWindow::nextPressed()
 {
     qDebug() << "nextPressed()";
+    controller.next();
 }
 
 void ChessWindow::resetPressed()

@@ -185,7 +185,7 @@ void MainWindow::insertToLog(ChessWindow *chess, QString str, bool isPawn, bool 
         }
     }
 
-    chess->log.push_back(new LogList(figure, x_start, y_start, x_end, y_end, kick, swap));
+    chess->log.push_back(new LogList(figure, y_start, x_start, y_end, x_end, kick, swap));
 }
 
 void MainWindow::saveChessWindow()
