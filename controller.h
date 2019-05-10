@@ -23,7 +23,7 @@ class Controller : public QObject
     int index;
 
 public:
-    Controller(BoardView *_boardView, int _index);
+    Controller(BoardView *_boardView, int _index, std::vector<LogList> &_log);
     void loadInitialState();
     void activatePossibleMoveFields(Figure *fig, Field *from);
     void deactivateAllFields();
@@ -37,7 +37,7 @@ public:
 
     void back();
     void next();
-
+    void printLog();
 
 public slots:
     void slotBoardViewPressed(int row, int col, bool active);

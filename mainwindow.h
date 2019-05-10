@@ -42,7 +42,7 @@ public slots:
 private:
     Ui::MainWindow *ui;
 
-    void insertToLog(ChessWindow *chess, QString str, bool isPawn, bool isWhite);
+    void insertToLog(std::vector<LogList> &log, QString str, bool isPawn, bool isWhite);
 };
 
 #endif // MAINWINDOW_H

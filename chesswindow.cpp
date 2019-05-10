@@ -16,12 +16,12 @@
 const int SCENE_WIDTH = 600;
 const int SCENE_HEIGHT = 600;
 
-ChessWindow::ChessWindow(QWidget *parent) :
+ChessWindow::ChessWindow(std::vector<LogList> &log, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ChessWindow),
     scene{new QGraphicsScene()},
     boardView{scene},
-    controller{&boardView, 0},
+    controller{&boardView, 0, log},
     timer{2500}
 {
     ui->setupUi(this);

@@ -46,8 +46,6 @@ void Board::setInitialState()
     getField(1, 7)->put(new Knight(true));
     getField(1, 8)->put(new Rook(true));
 
-    getField(3, 5)->put(new King(true));
-
     // init black
     for (int i = 1; i <= size; i++ ) {
         getField(7, i)->put(new Pawn(false));
