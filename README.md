@@ -10,3 +10,4 @@ Chess app
 - restart
 - zmena pesaka
 - vypsat chybove stavy na obrazovku
+- stridani hracu
