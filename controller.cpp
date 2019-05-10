@@ -17,7 +17,7 @@ Controller::Controller(BoardView *_boardView) :
 void Controller::loadInitialState()
 {
     for (auto field : board.board) {
-        Figure *fig = field->get();
+        Figure *fig = field->getFig();
         if (fig == nullptr) {
             continue;
         }
