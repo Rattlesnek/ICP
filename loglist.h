@@ -1,8 +1,7 @@
 #ifndef LOGLIST_H
 #define LOGLIST_H
 
-// different states of a single FieldView
-enum State { wKing, bKing, wQueen, bQueen, wRook, bRook, wBishop, bBishop, wKnight, bKnight, wPawn, bPawn, empty };
+#include "fieldview.h"
 
 class LogList
 {

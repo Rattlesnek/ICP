@@ -9,7 +9,7 @@
 
 
 Field::Field(int _row, int _col) :
-    row{_row}, col{_col},
+    row{_row}, col{_col}, figure{nullptr},
     topField{nullptr}, botField{nullptr}, rightField{nullptr}, leftField{nullptr}
 {
 }

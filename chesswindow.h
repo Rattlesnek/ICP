@@ -26,8 +26,6 @@ class ChessWindow : public QWidget
     BoardView boardView;
     Controller controller;
 
-
-
 public:
     explicit ChessWindow(QWidget *parent = nullptr);
     ~ChessWindow();

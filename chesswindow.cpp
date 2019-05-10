@@ -19,22 +19,16 @@ const int SCENE_HEIGHT = 600;
 ChessWindow::ChessWindow(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ChessWindow),
-    boardView{},
+    scene{new QGraphicsScene()},
+    boardView{scene},
     controller{&boardView}
 {
     ui->setupUi(this);
     // construct new scene and set its properties
-    scene = new QGraphicsScene();
     scene->setSceneRect(0, 0, SCENE_WIDTH, SCENE_HEIGHT);
 
-    // prepare pixmaps of figures - store to vector
-    boardView.preparePixmaps();
 
-    // create visual board
-    boardView.createBoard(scene);
-
-    // TODO - example of seting the fields of board
-    boardView.setBoardInitialState();
+    connect(&boardView, &BoardView::signalBoardViewPressed, &controller, &Controller::slotBoardViewPressed);
 
     // add scene to view and set properties of view
     ui->graphicsView->setScene(scene);

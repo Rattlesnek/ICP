@@ -16,11 +16,16 @@ class Controller : public QObject
     Board board;
     BoardView *boardView;
 
+    Field *fieldReady;
+
 public:
     Controller(BoardView *_boardView);
+    void loadInitialState();
+    void activatePossibleMoveFields(Figure *fig, Field *from);
+    void deactivateAllFields();
 
 public slots:
-    void slotFieldViewPressed(int row, int col, bool active);
+    void slotBoardViewPressed(int row, int col, bool active);
 };
 
 #endif // CONTROLLER_H

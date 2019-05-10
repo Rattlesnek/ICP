@@ -8,18 +8,20 @@
 
 class Board
 {
+public:
     static const int size = 8;
     std::vector<Field *> board;
 
-
 public:
-
     class OutOfBoard {};
 
     Board();
     Field *getField(int row, int col);
+    bool moveFigure(Field *from, Field *to);
+    void setInitialState();
+
 //    void checkAllMoves(Field *from);
-//    void setInitialState();
+
 };
 
 #endif // BOARD_H

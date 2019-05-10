@@ -34,7 +34,8 @@ SOURCES += \
     square.cpp \
     fieldview.cpp \
     controller.cpp \
-    boardview.cpp
+    boardview.cpp \
+    loglist.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -45,7 +46,8 @@ HEADERS += \
     square.h \
     fieldview.h \
     controller.h \
-    boardview.h
+    boardview.h \
+    loglist.h
 
 FORMS += \
         mainwindow.ui \

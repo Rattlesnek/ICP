@@ -60,6 +60,11 @@ void FieldView::setState(std::vector<QPixmap> &pixmaps, State new_state)
     state = new_state;
 }
 
+State FieldView::getState()
+{
+    return state;
+}
+
 void FieldView::setActive(bool active)
 {
     square->setActive(active);
@@ -67,20 +72,6 @@ void FieldView::setActive(bool active)
 
 void FieldView::slotSquarePressed(bool active)
 {
-    // TODO
-    // just example of activation
-
-    if (active) {
-        square->setActive(false);
-        qDebug() << "deactivated";
-    }
-    else {
-        square->setActive(true);
-        qDebug() << "activated";
-    }
-
-    // TODO
-
     // re-send signal with information about row and col
     emit signalFieldViewPressed(row, col, active);
 }
