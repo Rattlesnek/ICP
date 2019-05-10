@@ -22,7 +22,6 @@ bool Figure::isWhite()
 
 bool King::checkMove(Field *from, Field *to)
 {
-    qDebug() << "checkMove";
     if (abs(from->row - to->row) <= 1 && abs(from->col - to->col) <= 1) {
         if (to->getFig() == nullptr) {
             // to is empty

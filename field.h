@@ -25,6 +25,7 @@ public:
     bool isEmpty();
     bool put(Figure *fig);
     bool remove(Figure *fig);
+    Figure *moveFig(Field *to);
     Field *getNext(Direction dir);
 
 };

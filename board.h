@@ -17,7 +17,6 @@ public:
 
     Board();
     Field *getField(int row, int col);
-    bool moveFigure(Field *from, Field *to);
     void setInitialState();
 
 //    void checkAllMoves(Field *from);

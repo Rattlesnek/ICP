@@ -31,11 +31,6 @@ Field *Board::getField(int row, int col) {
     return board[(row-1) * size + (col-1)];
 }
 
-bool Board::moveFigure(Field *from, Field *to)
-{
-
-}
-
 void Board::setInitialState()
 {
     // init white

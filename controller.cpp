@@ -30,8 +30,8 @@ void Controller::loadInitialState()
 
 void Controller::activatePossibleMoveFields(Figure *fig, Field *from)
 {
-    for (int i = 1; i < Board::size; i++) {
-        for (int j = 1; j < Board::size; j++) {
+    for (int i = 1; i <= Board::size; i++) {
+        for (int j = 1; j <= Board::size; j++) {
 
             if ( fig->checkMove(from, board.getField(i, j)) ) {
                 boardView->setActiveFieldView(true, i, j);
@@ -42,10 +42,21 @@ void Controller::activatePossibleMoveFields(Figure *fig, Field *from)
 
 void Controller::deactivateAllFields()
 {
-    for (int i = 1; i < Board::size; i++) {
-        for (int j = 1; j < Board::size; j++) {
+    for (int i = 1; i <= Board::size; i++) {
+        for (int j = 1; j <= Board::size; j++) {
             boardView->setActiveFieldView(false, i, j);
         }
+    }
+}
+
+void Controller::applyStateOfField(Field *field)
+{
+    Figure *fig = field->getFig();
+    if (fig != nullptr) {
+        boardView->setStateFieldView(fig->getType(), field->row, field->col);
+    }
+    else {
+        boardView->setStateFieldView(empty, field->row, field->col);
     }
 }
 
@@ -79,9 +90,19 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
             deactivateAllFields();
 
             // move picture
+
+            Figure *kickedFig = fieldReady->moveFig(field);
+            if (kickedFig != nullptr) {
+                // delete kicked figure
+                delete kickedFig; // TODO it should be stored somewhere
+            }
+            applyStateOfField(fieldReady);
+            applyStateOfField(field);
+
+            /*
             FieldView *toFieldView = boardView->getFieldView(row, col);
             FieldView *fromFieldView = boardView->getFieldView(fieldReady->row, fieldReady->col);
-            boardView->moveFigureFieldView(fromFieldView, toFieldView);
+            boardView->moveFigureFieldView(fromFieldView, toFieldView);*/
 
             // field moved and now there is none
             fieldReady = nullptr;
@@ -89,6 +110,10 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
         else {
             // player clicked on non active field
 
+            // deactivate all fieldviews -- turn off red
+            deactivateAllFields();
+
+            fieldReady = nullptr;
         }
     }
 }

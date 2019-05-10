@@ -23,6 +23,7 @@ public:
     void loadInitialState();
     void activatePossibleMoveFields(Figure *fig, Field *from);
     void deactivateAllFields();
+    void applyStateOfField(Field *field);
 
 public slots:
     void slotBoardViewPressed(int row, int col, bool active);

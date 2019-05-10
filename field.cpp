@@ -47,6 +47,22 @@ bool Field::remove(Figure *fig)
     }
 }
 
+Figure *Field::moveFig(Field *to)
+{
+    // get figure from destination
+    Figure *toFigure = to->getFig();
+    // remove fig from dest
+    to->remove(toFigure);
+
+    // put fig to dest from this field
+    to->put(figure);
+    // remove fig from this field
+    remove(figure);
+
+    // returns nullptr or kicked figure from dest field
+    return toFigure;
+}
+
 Field *Field::getNext(Direction dir)
 {
     switch (dir) {
