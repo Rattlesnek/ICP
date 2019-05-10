@@ -1,8 +1,22 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
 #include "chesswindow.h"
+#include "loglist.h"
+#include "field.h"
+#include "board.h"
+#include "ui_mainwindow.h"
+#include "chesswindow.h"
+#include <QMainWindow>
+#include <QDebug>
+#include <QInputDialog>
+#include <QFileInfo>
+#include <QFile>
+#include <QStringRef>
+#include <QRegExp>
+#include <vector>
+#include <QTextEdit>
+#include <QTextEdit>
 
 namespace Ui {
 class MainWindow;
@@ -28,8 +42,7 @@ public slots:
 private:
     Ui::MainWindow *ui;
 
-    void getFigure(QString str);
-    void getStartX(QString str);
+    void insertToLog(ChessWindow *chess, QString str, bool isPawn, bool isWhite);
 };
 
 #endif // MAINWINDOW_H

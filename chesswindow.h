@@ -9,6 +9,7 @@
 
 #include <vector>
 
+#include "loglist.h"
 #include "boardview.h"
 #include "controller.h"
 
@@ -26,7 +27,17 @@ class ChessWindow : public QWidget
     BoardView boardView;
     Controller controller;
 
+public:
+    int timer; //simulation in miliseconds
+    std::vector<LogList *> log; //sequenction of steps
 
+public slots:
+    void sliderMoved(int);
+    void automaticPressed();
+    void backPressed();
+    void manualPressed();
+    void nextPressed();
+    void resetPressed();
 
 public:
     explicit ChessWindow(QWidget *parent = nullptr);

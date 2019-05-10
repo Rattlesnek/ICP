@@ -20,7 +20,8 @@ ChessWindow::ChessWindow(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ChessWindow),
     boardView{},
-    controller{&boardView}
+    controller{&boardView},
+    timer{0}
 {
     ui->setupUi(this);
     // construct new scene and set its properties
@@ -40,6 +41,45 @@ ChessWindow::ChessWindow(QWidget *parent) :
     ui->graphicsView->setScene(scene);
     ui->graphicsView->setFixedSize(SCENE_WIDTH, SCENE_HEIGHT);
     ui->graphicsView->show();
+
+    //get value of slider
+    connect(ui->timer, SIGNAL(valueChanged(int)), this, SLOT(sliderMoved(int)));
+
+    connect(ui->automatic, SIGNAL(released()), this, SLOT(automaticPressed()));
+    connect(ui->back, SIGNAL(released()), this, SLOT(backPressed()));
+    connect(ui->manual, SIGNAL(released()), this, SLOT(manualPressed()));
+    connect(ui->next, SIGNAL(released()), this, SLOT(nextPressed()));
+    connect(ui->reset, SIGNAL(released()), this, SLOT(resetPressed()));
+}
+
+void ChessWindow::sliderMoved(int value)
+{
+    timer = value * 50;
+}
+
+void ChessWindow::automaticPressed()
+{
+    qDebug() << "automaticPressed()";
+}
+
+void ChessWindow::backPressed()
+{
+    qDebug() << "backPressed()";
+}
+
+void ChessWindow::manualPressed()
+{
+    qDebug() << "manualPressed()";
+}
+
+void ChessWindow::nextPressed()
+{
+    qDebug() << "nextPressed()";
+}
+
+void ChessWindow::resetPressed()
+{
+    qDebug() << "resetPressed()";
 }
 
 ChessWindow::~ChessWindow()
