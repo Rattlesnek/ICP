@@ -9,6 +9,9 @@ class Field;
 class Figure
 {
 protected:
+    bool checkMoveBishop(Field *from, Field *to);
+    bool checkMoveRook(Field *from, Field *to);
+
     bool white;
 
 public:
