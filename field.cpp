@@ -15,7 +15,7 @@ Field::Field(int _row, int _col) :
 }
 
 
-Figure *Field::get()
+Figure *Field::getFig()
 {
     return figure;
 }

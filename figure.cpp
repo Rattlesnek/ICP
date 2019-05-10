@@ -24,11 +24,11 @@ bool King::checkMove(Field *from, Field *to)
 {
     qDebug() << "checkMove";
     if (abs(from->row - to->row) <= 1 && abs(from->col - to->col) <= 1) {
-        if (to->get() == nullptr) {
+        if (to->getFig() == nullptr) {
             // to is empty
             return true;
         }
-        else if ((this->isWhite() && to->get()->isWhite()) || (! this->isWhite() && ! to->get()->isWhite())) {
+        else if ((this->isWhite() && to->getFig()->isWhite()) || (! this->isWhite() && ! to->getFig()->isWhite())) {
             return false;
         }
         else {

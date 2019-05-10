@@ -21,7 +21,7 @@ public:
 public:
     Field(int row, int col);
 
-    Figure *get();
+    Figure *getFig();
     bool isEmpty();
     bool put(Figure *fig);
     bool remove(Figure *fig);
