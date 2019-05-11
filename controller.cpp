@@ -215,8 +215,8 @@ void Controller::addLog(State figure, int row_start, int col_start, int row_end,
 
 void Controller::deleteFollowingLogs()
 {
-    index--;
     log.erase(log.begin() + index, log.end());
+    index--;
 }
 
 bool Controller::back()
