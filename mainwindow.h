@@ -48,7 +48,7 @@ private:
 
     void insertLongToLog(std::vector<LogList> &log, QString str, bool isPawn, bool isWhite);
     void insertShortToLog(std::vector<LogList> &log, QString str, bool isPawn, bool isWhite);
-    void errorMassage(QString error);
+    void errorMessage(QString error);
 };
 
 #endif // MAINWINDOW_H

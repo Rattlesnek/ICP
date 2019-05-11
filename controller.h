@@ -42,8 +42,8 @@ public:
     bool next();
     void reset();
 
-
     void printLog();
+    void errorMessage(QString error);
 
     bool kingCheck(bool isWhite);
 

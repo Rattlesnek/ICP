@@ -3,6 +3,7 @@
 #include "figure.h"
 
 #include <QDebug>
+#include <QMessageBox>
 
 Controller::Controller(BoardView *_boardView, int _index, std::vector<LogList> &_log) :
     boardView{_boardView},
@@ -113,6 +114,7 @@ void Controller::executeOperation(bool backward)
         if (from == nullptr) {
             deleteFollowingLogs();
             qDebug() << "INCORECT RECORD - SHORT NOTATION";
+            errorMessage("Incorrect record!");
             return;
         }
         list.row_start = from->row;
@@ -131,6 +133,15 @@ void Controller::executeOperation(bool backward)
         Figure *kickedFig = figureFactory(list.kick);
         to->moveFig(from);
         to->put(kickedFig);
+
+        if (list.swap != empty) {
+            qDebug() << "swap!";
+            Figure *movedFig = from->getFig();
+            Figure *swapedFig = figureFactory(list.figure);
+            from->remove(movedFig);
+            delete movedFig;
+            from->put(swapedFig);
+        }
     }
     else {
         // FORWARD
@@ -145,6 +156,7 @@ void Controller::executeOperation(bool backward)
             // incorect record
             deleteFollowingLogs();
             qDebug() << "INCORECT RECORD";
+            errorMessage("Incorrect record!");
             return;
         }
 
@@ -154,6 +166,13 @@ void Controller::executeOperation(bool backward)
         if (kickedFig != nullptr) {
             list.kick = kickedFig->getType();
             delete kickedFig;
+        }
+
+        if (list.swap != empty) {
+            Figure *swapFig = figureFactory(list.swap);
+            to->remove(movedFig);
+            delete movedFig;
+            to->put(swapFig);
         }
     }
 
@@ -273,7 +292,7 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
     else {
         // fieldReady is ready to move
         if (fieldReady->getFig()->checkMove(fieldReady, field)) {
-            // player clicked on active field
+            // player clicked on active field            
 
             // deactivate all fieldviews -- turn off red
             deactivateAllFields();
@@ -282,6 +301,7 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
 
             State movedFigType = fieldReady->getFig()->getType();
             State kickedFigType = empty;
+            State swapFigType = empty;
 
             // move figure
             Figure *kickedFig = fieldReady->moveFig(field);
@@ -290,11 +310,27 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
                 kickedFigType = kickedFig->getType();
                 delete kickedFig; // TODO it should be stored somewhere
             }
+
+            // change pawn
+            if ((movedFigType == wPawn && field->row == 8) || (movedFigType == bPawn && field->row == 1)) {
+                Figure *swapFig = field->getFig();
+                field->remove(swapFig);
+                delete swapFig;
+
+//                QString file = QInputDialog::getText(this, tr("Load"), tr("Enter name of file:"),
+//                                                        QLineEdit::Normal, QString(), &ok);
+
+                // TODO
+                swapFig = new Queen(movedFigType == wPawn ? true : false);
+                field->put(swapFig);
+                swapFigType = swapFig->getType();
+            }
+
             applyStateOfField(fieldReady);
             applyStateOfField(field);
 
 
-            addLog(movedFigType, fieldReady->row, fieldReady->col, field->row, field->col, kickedFigType, empty);
+            addLog(movedFigType, fieldReady->row, fieldReady->col, field->row, field->col, kickedFigType, swapFigType);
 
 
             // field moved and now there is none
@@ -309,6 +345,13 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
             fieldReady = nullptr;
         }
     }    
+}
+
+void Controller::errorMessage(QString error)
+{
+    QMessageBox messageBox;
+    messageBox.critical(nullptr, "Error massage", error);
+    messageBox.setFixedSize(500,200);
 }
 
 void Controller::printLog()

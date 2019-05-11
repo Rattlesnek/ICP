@@ -33,7 +33,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::errorMassage(QString error)
+void MainWindow::errorMessage(QString error)
 {
     QMessageBox messageBox;
     messageBox.critical(nullptr, "Error massage", error);
@@ -65,7 +65,6 @@ void MainWindow::loadChessWindow()
     bool ok;
     QString file = QInputDialog::getText(this, tr("Load"), tr("Enter name of file:"),
                                             QLineEdit::Normal, QString(), &ok);
-\
     if (file == "") return ;
 
     QFileInfo check_file(file);
@@ -76,7 +75,7 @@ void MainWindow::loadChessWindow()
         QFile fp(check_file.filePath());
         if (!fp.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-                errorMassage("open file: " + check_file.filePath());
+                errorMessage("open file: " + check_file.filePath());
                 return ;
         }
 
@@ -90,14 +89,14 @@ void MainWindow::loadChessWindow()
 
             if (words.length() != 3)
             {
-                errorMassage("wrong format (except 3 words in every line), line: " + QString::number(line_counter));
+                errorMessage("wrong format (except 3 words in every line), line: " + QString::number(line_counter));
                 return ;
             }
 
             QRegExp expr("[1-9][0-9]*."); //TODO --- check if it increase and nothing missing
             if (!expr.exactMatch(words[0]))
             {
-                errorMassage("first word does not match, line: " + QString::number(line_counter));
+                errorMessage("first word does not match, line: " + QString::number(line_counter));
                 return ;
             }
 
@@ -117,7 +116,7 @@ void MainWindow::loadChessWindow()
                 insertShortToLog(log, words[1], false, true);
                 break;
             default:
-                errorMassage("second word does not match, line: " + QString::number(line_counter));
+                errorMessage("second word does not match, line: " + QString::number(line_counter));
                 return ;
             }
 
@@ -137,7 +136,7 @@ void MainWindow::loadChessWindow()
                 insertShortToLog(log, words[2], false, false);
                 break;
             default:
-                errorMassage("third word does not match, line: " + QString::number(line_counter));
+                errorMessage("third word does not match, line: " + QString::number(line_counter));
                 return ;
             }
             line_counter++;
@@ -146,7 +145,7 @@ void MainWindow::loadChessWindow()
     }
     else
     {
-        errorMassage("file: " + check_file.filePath() + " does not exist");
+        errorMessage("file: " + check_file.filePath() + " does not exist");
         return ;
     }
 
@@ -318,7 +317,7 @@ void MainWindow::saveChessWindow()
     {
         if (!check_file.isFile())
         {
-            errorMassage("excepted file, given directory");
+            errorMessage("excepted file, given directory");
             return ;
         }
     }
@@ -326,7 +325,7 @@ void MainWindow::saveChessWindow()
     QFile fp(check_file.filePath());
     if (!fp.open(QIODevice::ReadWrite | QIODevice::Text))
     {
-        errorMassage("cannot open file:" + check_file.filePath());
+        errorMessage("cannot open file:" + check_file.filePath());
         return ;
     }
 
