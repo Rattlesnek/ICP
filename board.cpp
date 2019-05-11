@@ -32,7 +32,9 @@ Field *Board::getField(int row, int col) {
 }
 
 void Board::setInitialState()
-{
+{    
+    clearBoard();
+
     // init white
     for (int i = 1; i <= size; i++ ) {
         getField(2, i)->put(new Pawn(true));
@@ -46,8 +48,6 @@ void Board::setInitialState()
     getField(1, 7)->put(new Knight(true));
     getField(1, 8)->put(new Rook(true));
 
-    getField(3, 5)->put(new King(true));
-
     // init black
     for (int i = 1; i <= size; i++ ) {
         getField(7, i)->put(new Pawn(false));
@@ -60,6 +60,18 @@ void Board::setInitialState()
     getField(8, 6)->put(new Bishop(false));
     getField(8, 7)->put(new Knight(false));
     getField(8, 8)->put(new Rook(false));
+}
+
+void Board::clearBoard()
+{
+    Figure *fig;
+    for (auto field : board) {
+        fig = field->getFig();
+        if (fig != nullptr) {
+            field->remove(fig);
+            delete fig;
+        }
+    }
 }
 
 

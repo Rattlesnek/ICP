@@ -18,6 +18,7 @@ public:
     Board();
     Field *getField(int row, int col);
     void setInitialState();
+    void clearBoard();
 
 //    void checkAllMoves(Field *from);
 

@@ -37,6 +37,7 @@ public:
 
     void back();
     void next();
+    void reset();
 
 
 public slots:

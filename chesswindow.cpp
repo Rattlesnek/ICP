@@ -54,6 +54,7 @@ void ChessWindow::sliderMoved(int value)
 void ChessWindow::automaticPressed()
 {
     qDebug() << "automaticPressed()";
+
 }
 
 void ChessWindow::backPressed()
@@ -76,6 +77,7 @@ void ChessWindow::nextPressed()
 void ChessWindow::resetPressed()
 {
     qDebug() << "resetPressed()";
+    controller.reset();
 }
 
 ChessWindow::~ChessWindow()
