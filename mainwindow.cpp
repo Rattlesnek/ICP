@@ -37,7 +37,9 @@ void MainWindow::newChessWindow()
 {
     counter++;
 
-    ChessWindow *chessWindowDialog = new ChessWindow(this);
+    std::vector<LogList> log;
+
+    ChessWindow *chessWindowDialog = new ChessWindow(log, this);
     chessWindowDialog->show();
 
     ui->tabWidget->addTab(chessWindowDialog, "chess " + QString::number(counter));
@@ -51,7 +53,9 @@ void MainWindow::deleteChessWindow()
 
 void MainWindow::loadChessWindow()
 {
-    ChessWindow *currentChess = static_cast<ChessWindow *>(ui->tabWidget->currentWidget());
+    counter++;
+
+    std::vector<LogList> log;
 
     bool ok;
     QString file = QInputDialog::getText(this, tr("Load"), tr("Enter name of file:"),
@@ -100,7 +104,7 @@ void MainWindow::loadChessWindow()
                     else
                         isPawn = false;
             }
-            insertToLog(currentChess, words[1], isPawn, true);
+            insertToLog(log, words[1], isPawn, true);
 
             //move of black player
             isPawn = true;
@@ -111,16 +115,23 @@ void MainWindow::loadChessWindow()
                 else
                     isPawn = false;
             }
-                insertToLog(currentChess, words[2], isPawn, true);
+                insertToLog(log, words[2], isPawn, true);
         }
     }
     else
     {
         qDebug() << file << " --- file does not exist!";
+        return ;
     }
+
+    ChessWindow *chessWindowDialog = new ChessWindow(log, this);
+    chessWindowDialog->show();
+
+    ui->tabWidget->addTab(chessWindowDialog, "chess " + QString::number(counter));
+    ui->tabWidget->setCurrentIndex(ui->tabWidget->count()-1);
 }
 
-void MainWindow::insertToLog(ChessWindow *chess, QString str, bool isPawn, bool isWhite)
+void MainWindow::insertToLog(std::vector<LogList> &log, QString str, bool isPawn, bool isWhite)
 {
     int x_start;
     int y_start;
@@ -185,7 +196,7 @@ void MainWindow::insertToLog(ChessWindow *chess, QString str, bool isPawn, bool 
         }
     }
 
-    chess->log.push_back(new LogList(figure, y_start, x_start, y_end, x_end, kick, swap));
+    log.push_back(LogList(figure, y_start, x_start, y_end, x_end, kick, swap));
 }
 
 void MainWindow::saveChessWindow()

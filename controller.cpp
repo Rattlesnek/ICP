@@ -4,9 +4,10 @@
 
 #include <QDebug>
 
-Controller::Controller(BoardView *_boardView, int _index) :
+Controller::Controller(BoardView *_boardView, int _index, std::vector<LogList> &_log) :
     boardView{_boardView},
     fieldReady{nullptr},
+    log{_log},
     index{_index}
 {
     board.setInitialState();
@@ -110,6 +111,10 @@ void Controller::back()
 
 void Controller::next()
 {
+    qDebug() << "Next()";
+
+    printLog();
+
     deactivateAllFields();
 
     if (index == log.size()) {
@@ -131,8 +136,6 @@ void Controller::reset()
     index = 0;
     log.clear();
 }
-
-
 
 
 void Controller::slotBoardViewPressed(int row, int col, bool active)
@@ -190,4 +193,12 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
             fieldReady = nullptr;
         }
     }    
+}
+
+void Controller::printLog()
+{
+    for (auto it : log)
+    {
+        qDebug() << it.col_start << it.row_start << it.col_end << it.row_start;
+    }
 }

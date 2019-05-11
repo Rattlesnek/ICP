@@ -2,7 +2,7 @@
 Chess app
 
 - sach + mat
-- load
+- load [asi jo]
 - zkracena notace
 - vypis moves do line editu
 - manual + auto
@@ -11,3 +11,4 @@ Chess app
 - zmena pesaka
 - vypsat chybove stavy na obrazovku
 - stridani hracu
+- nacitani dlouha notace - oprava

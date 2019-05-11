@@ -29,7 +29,6 @@ class ChessWindow : public QWidget
 
 public:
     int timer; //simulation in miliseconds
-    std::vector<LogList *> log; //sequenction of steps
 
 public slots:
     void sliderMoved(int);
@@ -40,7 +39,7 @@ public slots:
     void resetPressed();
 
 public:
-    explicit ChessWindow(QWidget *parent = nullptr);
+    explicit ChessWindow(std::vector<LogList> &log, QWidget *parent = nullptr);
     ~ChessWindow();
 
 };
