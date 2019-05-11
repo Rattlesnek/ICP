@@ -20,7 +20,7 @@ class BoardView : public QObject
 public:
     BoardView(QGraphicsScene *scene);
     void preparePixmaps();
-    void createBoard(QGraphicsScene *scene);
+    void createBoard(QGraphicsScene *scene, double shift_down, double shift_right);
     FieldView *getFieldView(int row, int col);
     void setActiveFieldView(bool active, int row, int col);
     void setStateFieldView(State state, int row, int col);

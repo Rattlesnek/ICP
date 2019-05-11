@@ -1,11 +1,12 @@
 #include "boardview.h"
 
-#include <QGraphicsTextItem>
+#include <QFont>
+#include <QGraphicsSimpleTextItem>
 
 BoardView::BoardView(QGraphicsScene *scene)
 {
     preparePixmaps();
-    createBoard(scene);
+    createBoard(scene, Square::size, 0);
 }
 
 void BoardView::preparePixmaps()
@@ -27,16 +28,29 @@ void BoardView::preparePixmaps()
     };
 }
 
-void BoardView::createBoard(QGraphicsScene *scene)
-{   
+void BoardView::createBoard(QGraphicsScene *scene, double shift_down, double shift_right)
+{       
+    double textShift_down = 11.5;
+    double textShift_right = 22.5;
+
+    QFont font;
+    font.setPixelSize(30);
+
     for (int row = 0; row < 8; row++) {
+        QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem();
+        text->setText(QString::number(row + 1));
+        text->setFont(font);
+        text->setPos(shift_right + textShift_right, shift_down + textShift_down + Square::size*7 - row*Square::size);
+        text->show();
+        scene->addItem(text);
+
         for (int col = 0; col < 8; col++) {
 
             // create a single FieldView (square togheter with pictures of figures)
             FieldView *fw = new FieldView(row+1, col+1, (row + col) % 2 != 0);
 
             // set atributes of the FieldView
-            fw->setPos((col + 1)*Square::size, 50 + Square::size*7 - row*Square::size);
+            fw->setPos(shift_right + (col + 1)*Square::size, shift_down + Square::size*7 - row*Square::size);
             fw->setState(pixmaps, empty);
             fw->addToScene(scene);
 
@@ -46,6 +60,16 @@ void BoardView::createBoard(QGraphicsScene *scene)
             // store the FieldView to the vector of FieldViews
             fieldviews.push_back(fw);
         }
+    }
+
+    for (int col = 0; col < 8; col++) {
+        QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem();
+        char c = static_cast<char>(65 + col);
+        text->setText(QString(c));
+        text->setFont(font);
+        text->setPos(shift_right + textShift_right + (col + 1)*Square::size, shift_down + textShift_down + Square::size*8);
+        text->show();
+        scene->addItem(text);
     }
 }
 

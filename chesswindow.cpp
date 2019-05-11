@@ -13,8 +13,8 @@
 #include "square.h"
 #include "boardview.h"
 
-const int SCENE_WIDTH = 600;
-const int SCENE_HEIGHT = 600;
+const int SCENE_WIDTH = static_cast<int>(10 * Square::size);
+const int SCENE_HEIGHT = static_cast<int>(10 * Square::size);
 
 ChessWindow::ChessWindow(std::vector<LogList> &log, QWidget *parent) :
     QWidget(parent),
@@ -34,6 +34,8 @@ ChessWindow::ChessWindow(std::vector<LogList> &log, QWidget *parent) :
     ui->graphicsView->setScene(scene);
     ui->graphicsView->setFixedSize(SCENE_WIDTH, SCENE_HEIGHT);
     ui->graphicsView->show();
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     //get value of slider
     connect(ui->timer, SIGNAL(valueChanged(int)), this, SLOT(sliderMoved(int)));
