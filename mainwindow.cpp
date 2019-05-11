@@ -140,6 +140,7 @@ void MainWindow::loadChessWindow()
             }
             line_counter++;
         }
+        fp.close();
     }
     else
     {
@@ -299,16 +300,10 @@ void MainWindow::insertShortToLog(std::vector<LogList> &log, QString str, bool i
     }
 
     log.push_back(LogList(figure, y_start, x_start, y_end, x_end, empty, swap));
-
-
 }
 
-
-//TODO -- create new fiel if does not exist and rewrite if file exists
 void MainWindow::saveChessWindow()
 {
-    qDebug() << "save()";
-
     bool ok;
     QString file = QInputDialog::getText(this, tr("Save"), tr("Enter name of file:"),
                                             QLineEdit::Normal, QString(), &ok);
@@ -316,31 +311,32 @@ void MainWindow::saveChessWindow()
     QFileInfo check_file(file);
     check_file = check_file.absoluteFilePath();
 
-    // check if file exists and if yes: Is it really a file and no directory?
-    if (check_file.exists() && check_file.isFile())
+    if (check_file.exists())
     {
-        QFile fp(check_file.filePath());
-        if (!fp.open(QIODevice::ReadWrite | QIODevice::Text))
+        if (!check_file.isFile())
         {
-            qDebug() << "ERROR: open file";  //TODO
+            errorMassage("excepted file, given directory");
             return ;
         }
-
-        QWidget *current = ui->tabWidget->currentWidget();
-        QTextEdit *line = current->findChild<QTextEdit *> ("log");
-
-        if (line != nullptr)
-        {
-            QTextStream stream(&fp);
-            stream << line->toPlainText();
-            fp.flush();
-            fp.close();
-        }
-        else
-            qDebug() << "Internal Error!"; //TODO
     }
-    else
+
+    QFile fp(check_file.filePath());
+    if (!fp.open(QIODevice::ReadWrite | QIODevice::Text))
     {
-        qDebug() << file << " --- file does not exist!"; //TODO
+        errorMassage("cannot open file:" + check_file.filePath());
+        return ;
     }
+
+    QWidget *current = ui->tabWidget->currentWidget();
+    QTextEdit *line = current->findChild<QTextEdit *> ("log");
+
+    if (line != nullptr)
+    {
+        QTextStream stream(&fp);
+        stream << line->toPlainText();
+        fp.flush();
+        fp.close();
+     }
+     else
+            qDebug() << "Internal Error!"; //probably never happaned
 }
