@@ -19,11 +19,12 @@ void Controller::loadInitialState()
 {
     for (auto field : board.board) {
         Figure *fig = field->getFig();
-        State state = empty;
-        if (fig != nullptr) {
-            state = fig->getType();
+        if (fig == nullptr) {
+            continue;
         }
-        boardView->setStateFieldView(state, field->row, field->col);
+
+        State stt = fig->getType();
+        boardView->setStateFieldView(stt, field->row, field->col);
     }
 }
 
@@ -69,11 +70,15 @@ void Controller::executeOperation(bool backward)
     qDebug() << "from " << from->row << ' ' << from->col;
     qDebug() << "to " << to->row << ' ' << to->col;
 
-
     if (backward) {
         to->moveFig(from);
+
+        //TODO delete the last line in text edit
+        emit signalMoveDelete();
     }
     else {
+        emit signalMoveWrite(from, to, empty); //print out
+
         from->moveFig(to);
     }
 
@@ -125,16 +130,9 @@ void Controller::next()
         index++;
         qDebug() << "size: " << log.size() << " next " << index;
     }
-}
 
-void Controller::reset()
-{
-    deactivateAllFields();
-    board.setInitialState();
-    loadInitialState();
+    qDebug() << "... end";
 
-    index = 0;
-    log.clear();
 }
 
 
