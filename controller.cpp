@@ -59,6 +59,38 @@ void Controller::applyStateOfField(Field *field)
     }
 }
 
+Figure *Controller::figureFactory(State state)
+{
+    switch (state) {
+        case wKing:
+            return new King(true);
+        case bKing:
+            return new King(false);
+        case wQueen:
+            return new Queen(true);
+        case bQueen:
+            return new Queen(false);
+        case wBishop:
+            return new Bishop(true);
+        case bBishop:
+            return new Bishop(false);
+        case wKnight:
+            return new Knight(true);
+        case bKnight:
+            return new Knight(false);
+        case wRook:
+            return new Rook(true);
+        case bRook:
+            return new Rook(false);
+        case wPawn:
+            return new Pawn(true);
+        case bPawn:
+            return new Pawn(false);
+        case empty:
+            return nullptr;
+    }
+}
+
 void Controller::executeOperation(bool backward)
 {
     LogList list = log[index];
@@ -71,11 +103,18 @@ void Controller::executeOperation(bool backward)
 
     if (backward) {
         emit signalMoveDelete(); //delete last line
+
+        Figure *fig = figureFactory(list.kick);
         to->moveFig(from);
+        to->put(fig);
     }
     else {
         emit signalMoveWrite(from, to, empty); //print out
-        from->moveFig(to);
+
+        Figure *kickedFig = from->moveFig(to);
+        if (kickedFig != nullptr) {
+            delete kickedFig;
+        }
     }
 
     applyStateOfField(to);

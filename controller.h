@@ -28,6 +28,7 @@ public:
     void activatePossibleMoveFields(Figure *fig, Field *from);
     void deactivateAllFields();
     void applyStateOfField(Field *field);
+    Figure *figureFactory(State state);
 
 
     void executeOperation(bool backward);
