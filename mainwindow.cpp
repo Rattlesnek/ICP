@@ -93,7 +93,7 @@ void MainWindow::loadChessWindow()
             }
 
             QRegExp expr_pawn("([a-h][1-8]x?[a-h][1-8][K|D|V|S|J]?[#|+]?)");
-            QRegExp expr_others("[K|D|V|S|J][a-h][1-8]x?[a-h][1-8][#|+]?)");
+            QRegExp expr_others("([K|D|V|S|J][a-h][1-8]x?[a-h][1-8][#|+]?)");
 
             //move of white player
             bool isPawn = true;
