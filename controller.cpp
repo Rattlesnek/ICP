@@ -70,19 +70,17 @@ void Controller::executeOperation(bool backward)
     qDebug() << "to " << to->row << ' ' << to->col;
 
     if (backward) {
+        emit signalMoveDelete(); //delete last line
         to->moveFig(from);
-
-        //TODO delete the last line in text edit
-        emit signalMoveDelete();
     }
     else {
         emit signalMoveWrite(from, to, empty); //print out
-
         from->moveFig(to);
     }
 
     applyStateOfField(to);
     applyStateOfField(from);
+
 }
 
 void Controller::addLog(State figure, int row_start, int col_start, int row_end, int col_end, State kick, State swap)
@@ -96,6 +94,9 @@ void Controller::addLog(State figure, int row_start, int col_start, int row_end,
     index++;
 
     qDebug() << "size: " << log.size() << " index " << index;
+
+    if (kingCheck(true)) //true --- white plays
+        qDebug() << "WHITE: check";
 }
 
 bool Controller::back()
@@ -175,6 +176,8 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
             // deactivate all fieldviews -- turn off red
             deactivateAllFields();
 
+            emit  signalMoveWrite(fieldReady, field, empty);
+
             State movedFigType = fieldReady->getFig()->getType();
             State kickedFigType = empty;
 
@@ -212,4 +215,31 @@ void Controller::printLog()
     {
         qDebug() << it.col_start << it.row_start << it.col_end << it.row_start;
     }
+}
+
+bool Controller::kingCheck(bool isWhite)
+{
+    Field *figKing;
+    if (isWhite)
+        figKing = board.getField(wKing);
+    else
+        figKing = board.getField(bKing);
+
+    for (int i = 1; i <= Board::size; i++)
+    {
+        for (int j = 1; j <= Board::size; j++)
+        {
+            Field *from = board.getField(i, j);
+
+            if (from->getFig() != nullptr)
+            {
+                if (from->getFig()->isWhite() != isWhite)
+                {
+                    if (from->getFig()->checkMove(from, figKing))
+                        return true;
+                }
+            }
+        }
+    }
+    return false;
 }

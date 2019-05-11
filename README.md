@@ -1,14 +1,15 @@
 # ICP
 Chess app
 
-- sach + mat
-- load [asi jo]
+- sach [done]
+- mat
+- load [done]
 - zkracena notace
-- vypis moves do line editu
-- manual + auto
+- vypis moves do line editu [done]
+- manual + auto [done]
 - cislovani radku + sloupcu
-- restart
+- restart [done]
 - zmena pesaka
 - vypsat chybove stavy na obrazovku
 - stridani hracu
-- nacitani dlouha notace - oprava
+- nacitani dlouha notace - oprava [done]

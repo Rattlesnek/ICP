@@ -31,6 +31,25 @@ Field *Board::getField(int row, int col) {
     return board[(row-1) * size + (col-1)];
 }
 
+Field *Board::getField(State s)
+{
+    Field *ret;
+    for (int i = 1; i <= Board::size; i++)
+    {
+        for (int j = 1; j <= Board::size; j++)
+        {
+            ret = board[(i-1) * size + (j-1)];
+            if (ret->getFig() == nullptr)
+                continue;
+
+            if (ret->getFig()->getType() == s)
+                return ret;
+        }
+    }
+
+    return nullptr;
+}
+
 void Board::setInitialState()
 {    
     clearBoard();
