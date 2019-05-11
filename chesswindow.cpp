@@ -45,9 +45,72 @@ ChessWindow::ChessWindow(std::vector<LogList> &log, QWidget *parent) :
     connect(ui->reset, SIGNAL(released()), this, SLOT(resetPressed()));
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(automaticMove()));
-
     // set interval to 1 sec
     timer.setInterval(1000);
+
+    connect(&controller, SIGNAL(signalMoveWrite(Field *, Field *, State)), this, SLOT(writeMove(Field *, Field *, State)));
+    connect(&controller, SIGNAL(signalMoveDelete()), this, SLOT(deleteMove()));
+}
+
+QString ChessWindow::nameFig(State s)
+{
+    if (s == wPawn || s == bPawn)
+        return "";
+    if (s == wRook || s == bRook)
+        return "V";
+    if (s == wBishop || s == bBishop)
+        return "S";
+    if (s == wKnight || s == bKnight)
+        return "J";
+    if (s == wKing || s == bKing)
+        return "K";
+
+    return "D"; //otherwise it is queen
+}
+
+QChar ChessWindow::numToCharInd(int a)
+{
+     return 'a' + (a - 1);
+}
+
+//TODO --- sach+mat
+void ChessWindow::writeMove(Field *from, Field *to, State swap)
+{
+    qDebug() << "here";
+
+    //get coordinates
+    int x_start = from->row;
+    int y_start = from->col;
+    int x_end = to->row;
+    int y_end = to->row;
+
+    QString kick = "";
+    if (to->getFig() != nullptr) //we must kick
+        kick = "x";
+
+    QString swapStr = "";
+    if (swap != empty)
+    {
+        swapStr = nameFig(swap);
+    }
+
+    //print out in long version
+    //qDebug() << nameFig(to->getFig()->getType()) << numToCharInd(y_start) << x_start << kick << numToCharInd(y_end) << x_end << swapStr;
+    this->ui->log->append(nameFig(from->getFig()->getType()) + numToCharInd(y_start) + QString::number(x_start) +
+                          kick + numToCharInd(y_end) + QString::number(x_end) + swapStr);
+}
+
+// https://stackoverflow.com/questions/15326569/removing-last-line-from-qtextedit
+void ChessWindow::deleteMove()
+{
+    this->ui->log->setFocus();
+    QTextCursor storeCursorPos = this->ui->log->textCursor();
+    this->ui->log->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+    this->ui->log->moveCursor(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
+    this->ui->log->moveCursor(QTextCursor::End, QTextCursor::KeepAnchor);
+    this->ui->log->textCursor().removeSelectedText();
+    this->ui->log->textCursor().deletePreviousChar();
+    this->ui->log->setTextCursor(storeCursorPos);
 }
 
 void ChessWindow::sliderMoved(int value)
@@ -83,7 +146,6 @@ void ChessWindow::nextPressed()
 void ChessWindow::resetPressed()
 {
     qDebug() << "resetPressed()";
-    controller.reset();
 }
 
 void ChessWindow::automaticMove()

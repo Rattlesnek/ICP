@@ -9,10 +9,12 @@
 #include <QTimer>
 
 #include <vector>
+#include <string>
 
 #include "loglist.h"
 #include "boardview.h"
 #include "controller.h"
+#include "field.h"
 
 namespace Ui {
 class ChessWindow;
@@ -30,6 +32,11 @@ class ChessWindow : public QWidget
     BoardView boardView;
     Controller controller;
 
+    static QString nameFig(State s);
+    static QChar numToCharInd(int a);
+
+ //   static void writeMove(Field *from, Field *to, State swap);
+
 public slots:
     void sliderMoved(int);
     void automaticPressed();
@@ -38,6 +45,8 @@ public slots:
     void nextPressed();
     void resetPressed();
     void automaticMove();
+    void writeMove(Field *from, Field *to, State swap);
+    void deleteMove();
 
 public:
     explicit ChessWindow(std::vector<LogList> &log, QWidget *parent = nullptr);

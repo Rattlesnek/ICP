@@ -43,6 +43,10 @@ public:
 
 public slots:
     void slotBoardViewPressed(int row, int col, bool active);
+
+signals:
+    void signalMoveWrite(Field *from, Field *to, State swap);
+    void signalMoveDelete();
 };
 
 #endif // CONTROLLER_H
