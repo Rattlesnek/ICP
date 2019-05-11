@@ -75,12 +75,16 @@ Field *Field::getNext(Direction dir)
         case leftDir:
             return leftField;
         case topLeftDir:
+            if (topField == nullptr) return nullptr;
             return topField->getNext(leftDir);
         case topRightDir:
+            if (topField == nullptr) return nullptr;
             return topField->getNext(rightDir);
         case botLeftDir:
+            if (botField == nullptr) return nullptr;
             return botField->getNext(leftDir);
         case botRightDir:
+            if (botField == nullptr) return nullptr;
             return botField->getNext(rightDir);
     }
 }

@@ -40,28 +40,28 @@ bool King::checkMove(Field *from, Field *to)
 
 bool Queen::checkMove(Field *from, Field *to)
 {
-    qDebug() << "QUEEN: checkMove()";
+    //qDebug() << "QUEEN: checkMove()";
 
     return checkMoveBishop(from, to) || checkMoveRook(from, to);
 }
 
 bool Bishop::checkMove(Field *from, Field *to)
 {
-    qDebug() << "BISHOP: checkMove()";
+    //qDebug() << "BISHOP: checkMove()";
 
     return checkMoveBishop(from, to);
 }
 
 bool Rook::checkMove(Field *from, Field *to)
 {
-    qDebug() << "ROOK: checkMove()";
+    //qDebug() << "ROOK: checkMove()";
 
     return checkMoveRook(from, to);
 }
 
 bool Knight::checkMove(Field *from, Field *to)
 {
-    qDebug() << "KNIGHT: checkMove()";
+    //qDebug() << "KNIGHT: checkMove()";
 
     //if to end figure is no null, then must be opposite colour
     if (to->getFig() != nullptr)
@@ -87,7 +87,7 @@ bool Knight::checkMove(Field *from, Field *to)
 
 bool Pawn::checkMove(Field *from, Field *to)
 {
-    qDebug() << "Pawn: checkMove()";
+    //qDebug() << "Pawn: checkMove()";
 
     //if to end figure is no null, then must be opposite colour
     if (to->getFig() != nullptr)

@@ -7,6 +7,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 #include <QTimer>
+#include <QMessageBox>
 
 #include <vector>
 #include <string>
@@ -43,7 +44,8 @@ public slots:
     void nextPressed();
     void resetPressed();
     void automaticMove();
-    void writeMove(Field *from, Field *to, State swap);
+    void writeMove(Field *from, Field *to, State swap, int check);
+    void writeCheckKing(int check);
     void deleteMove();
 
 public:

@@ -50,7 +50,8 @@ ChessWindow::ChessWindow(std::vector<LogList> &log, QWidget *parent) :
     // set interval to 1 sec
     timer.setInterval(1000);
 
-    connect(&controller, SIGNAL(signalMoveWrite(Field *, Field *, State)), this, SLOT(writeMove(Field *, Field *, State)));
+    connect(&controller, SIGNAL(signalMoveWrite(Field *, Field *, State, int)), this, SLOT(writeMove(Field *, Field *, State, int)));
+    connect(&controller, SIGNAL(signalCheckKing(int)), this, SLOT(writeCheckKing(int)));
     connect(&controller, SIGNAL(signalMoveDelete()), this, SLOT(deleteMove()));
 }
 
@@ -75,10 +76,19 @@ QChar ChessWindow::numToCharInd(int a)
      return 'a' + (a - 1);
 }
 
-//TODO --- sach+mat
-void ChessWindow::writeMove(Field *from, Field *to, State swap)
+
+/*
+ * check == 0 --- not check
+ * check == 1 --- check
+ * check == 2 --- mate
+ */
+void ChessWindow::writeMove(Field *from, Field *to, State swap, int check)
 {
-    qDebug() << "here";
+    QString checkStr = "";
+    if (check == 1)
+        checkStr = "+";
+    if (check == 2)
+        checkStr = "#";
 
     //get coordinates
     int x_start = from->row;
@@ -97,9 +107,28 @@ void ChessWindow::writeMove(Field *from, Field *to, State swap)
     }
 
     //print out in long version
-    //qDebug() << nameFig(to->getFig()->getType()) << numToCharInd(y_start) << x_start << kick << numToCharInd(y_end) << x_end << swapStr;
     this->ui->log->append(nameFig(from->getFig()->getType()) + numToCharInd(y_start) + QString::number(x_start) +
-                          kick + numToCharInd(y_end) + QString::number(x_end) + swapStr);
+                          kick + numToCharInd(y_end) + QString::number(x_end) + swapStr + checkStr);
+}
+
+void ChessWindow::writeCheckKing(int check)
+{
+    QString checkStr = "";
+    if (check == 1)
+        checkStr = "+";
+    if (check == 2)
+        checkStr = "#";
+
+    this->ui->log->moveCursor(QTextCursor::End);
+    this->ui->log->insertPlainText(checkStr);
+    this->ui->log->moveCursor(QTextCursor::End);
+
+    if (check == 2)
+    {
+        QMessageBox messageBox;
+        messageBox.critical(nullptr, "", "End game");
+        messageBox.setFixedSize(500,200);
+    }
 }
 
 // https://stackoverflow.com/questions/15326569/removing-last-line-from-qtextedit

@@ -99,6 +99,7 @@ bool Controller::whiteOnMove()
 
 void Controller::executeOperation(bool backward)
 {
+    bool player = whiteOnMove();
     LogList &list = log[index];
 
     Field *from;
@@ -160,7 +161,7 @@ void Controller::executeOperation(bool backward)
             return;
         }
 
-        emit signalMoveWrite(from, to, empty); //print out
+        emit signalMoveWrite(from, to, empty, 0); //print out
 
         Figure *kickedFig = from->moveFig(to);
         if (kickedFig != nullptr) {
@@ -174,6 +175,15 @@ void Controller::executeOperation(bool backward)
             delete movedFig;
             to->put(swapFig);
         }
+
+        int check = 0;
+        if (kingCheck(!player))
+        {
+            check = 1;
+            if (kingMate(!player))
+                check = 2;
+        }
+        emit signalCheckKing(check);
     }
 
     applyStateOfField(to);
@@ -252,9 +262,6 @@ bool Controller::next()
         qDebug() << "size: " << log.size() << " next " << index;
         return true;
     }
-
-    qDebug() << "... end";
-
 }
 
 void Controller::reset()
@@ -272,6 +279,7 @@ void Controller::reset()
 
 void Controller::slotBoardViewPressed(int row, int col, bool active)
 {
+    bool player = whiteOnMove();
     qDebug() << "signal from BoardView recv in Controller " << row << " " << col << " " << active;
 
     // if clicked on figure
@@ -292,12 +300,12 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
     else {
         // fieldReady is ready to move
         if (fieldReady->getFig()->checkMove(fieldReady, field)) {
-            // player clicked on active field            
+            // player clicked on active field
 
             // deactivate all fieldviews -- turn off red
             deactivateAllFields();
 
-            emit  signalMoveWrite(fieldReady, field, empty);
+            emit  signalMoveWrite(fieldReady, field, empty, 0);
 
             State movedFigType = fieldReady->getFig()->getType();
             State kickedFigType = empty;
@@ -329,6 +337,14 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
             applyStateOfField(fieldReady);
             applyStateOfField(field);
 
+            int check = 0;
+            if (kingCheck(!player))
+            {
+                check = 1;
+                if (kingMate(!player))
+                    check = 2;
+            }
+            emit signalCheckKing(check);
 
             addLog(movedFigType, fieldReady->row, fieldReady->col, field->row, field->col, kickedFigType, swapFigType);
 
@@ -344,7 +360,7 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
 
             fieldReady = nullptr;
         }
-    }    
+    }
 }
 
 void Controller::errorMessage(QString error)
@@ -370,6 +386,9 @@ bool Controller::kingCheck(bool isWhite)
     else
         figKing = board.getField(bKing);
 
+    if (figKing == nullptr)
+        return false;
+
     for (int i = 1; i <= Board::size; i++)
     {
         for (int j = 1; j <= Board::size; j++)
@@ -387,4 +406,45 @@ bool Controller::kingCheck(bool isWhite)
         }
     }
     return false;
+}
+
+bool Controller::isStillCheck(Field *king, bool isWhite, Direction dir)
+{
+    Field *to = king->getNext(dir);
+
+    if (to == nullptr)
+        return true;
+
+    if (to->getFig() != nullptr)
+    {
+        if (to->getFig()->isWhite() == isWhite) //same colour
+            return true; //is still check beacuse i cannot move king
+    }
+
+    Figure *kick = king->moveFig(to);
+    bool ret = kingCheck(isWhite);
+
+    //back changes
+    to->moveFig(king);
+    to->put(kick);
+
+    return ret;
+ }
+
+bool Controller::kingMate(bool isWhite)
+{
+    //king possible move
+    Field *figKing;
+    if (isWhite)
+        figKing = board.getField(wKing);
+    else
+        figKing = board.getField(bKing);
+
+    if ((isStillCheck(figKing, isWhite, botDir) && isStillCheck(figKing, isWhite, topDir)
+            && isStillCheck(figKing, isWhite, leftDir) && isStillCheck(figKing, isWhite, rightDir)
+            && isStillCheck(figKing, isWhite, botLeftDir) && isStillCheck(figKing, isWhite, botRightDir)
+            && isStillCheck(figKing, isWhite, topLeftDir) && isStillCheck(figKing, isWhite, topRightDir)) == 0)
+        return false;
+
+    return true;
 }

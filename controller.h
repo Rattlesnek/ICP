@@ -42,16 +42,20 @@ public:
     bool next();
     void reset();
 
+
     void printLog();
-    void errorMessage(QString error);
+    void errorMessage(QString string);
 
     bool kingCheck(bool isWhite);
+    bool kingMate(bool isWhite);
+    bool isStillCheck(Field *king, bool isWhite, Direction dir);
 
 public slots:
     void slotBoardViewPressed(int row, int col, bool active);
 
 signals:
-    void signalMoveWrite(Field *from, Field *to, State swap);
+    void signalMoveWrite(Field *from, Field *to, State swap, int check);
+    void signalCheckKing(int);
     void signalMoveDelete();
 };
 
