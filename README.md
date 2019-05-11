@@ -7,7 +7,7 @@ Chess app
 - zkracena notace
 - vypis moves do line editu [done]
 - manual + auto [done]
-- cislovani radku + sloupcu
+- cislovani radku + sloupcu [done]
 - restart [done]
 - zmena pesaka
 - vypsat chybove stavy na obrazovku
