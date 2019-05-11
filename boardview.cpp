@@ -1,5 +1,7 @@
 #include "boardview.h"
 
+#include <QGraphicsTextItem>
+
 BoardView::BoardView(QGraphicsScene *scene)
 {
     preparePixmaps();
@@ -26,7 +28,7 @@ void BoardView::preparePixmaps()
 }
 
 void BoardView::createBoard(QGraphicsScene *scene)
-{
+{   
     for (int row = 0; row < 8; row++) {
         for (int col = 0; col < 8; col++) {
 
@@ -34,7 +36,7 @@ void BoardView::createBoard(QGraphicsScene *scene)
             FieldView *fw = new FieldView(row+1, col+1, (row + col) % 2 != 0);
 
             // set atributes of the FieldView
-            fw->setPos(50 + col*Square::size, Square::size*7 + 50 - row*Square::size);
+            fw->setPos((col + 1)*Square::size, 50 + Square::size*7 - row*Square::size);
             fw->setState(pixmaps, empty);
             fw->addToScene(scene);
 

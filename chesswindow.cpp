@@ -21,8 +21,7 @@ ChessWindow::ChessWindow(std::vector<LogList> &log, QWidget *parent) :
     ui(new Ui::ChessWindow),
     scene{new QGraphicsScene()},
     boardView{scene},
-    controller{&boardView, 0, log},
-    timer{2500}
+    controller{&boardView, 0, log}
 {
     ui->setupUi(this);
     // construct new scene and set its properties
@@ -44,17 +43,23 @@ ChessWindow::ChessWindow(std::vector<LogList> &log, QWidget *parent) :
     connect(ui->manual, SIGNAL(released()), this, SLOT(manualPressed()));
     connect(ui->next, SIGNAL(released()), this, SLOT(nextPressed()));
     connect(ui->reset, SIGNAL(released()), this, SLOT(resetPressed()));
+
+    connect(&timer, SIGNAL(timeout()), this, SLOT(automaticMove()));
+
+    // set interval to 1 sec
+    timer.setInterval(1000);
 }
 
 void ChessWindow::sliderMoved(int value)
 {
-    timer = value * 50;
+    qDebug() << "interval set to: " << value *20;
+    timer.setInterval(value * 20);
 }
 
 void ChessWindow::automaticPressed()
 {
     qDebug() << "automaticPressed()";
-
+    timer.start();
 }
 
 void ChessWindow::backPressed()
@@ -66,6 +71,7 @@ void ChessWindow::backPressed()
 void ChessWindow::manualPressed()
 {
     qDebug() << "manualPressed()";
+    timer.stop();
 }
 
 void ChessWindow::nextPressed()
@@ -78,6 +84,16 @@ void ChessWindow::resetPressed()
 {
     qDebug() << "resetPressed()";
     controller.reset();
+}
+
+void ChessWindow::automaticMove()
+{
+    qDebug() << "automaticMove()";
+    if (controller.next() == false) {
+        // in case there are no next moves to execute
+        // switch to manual
+        manualPressed();
+    }
 }
 
 ChessWindow::~ChessWindow()

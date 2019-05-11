@@ -6,6 +6,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
+#include <QTimer>
 
 #include <vector>
 
@@ -24,11 +25,10 @@ class ChessWindow : public QWidget
     Ui::ChessWindow *ui;
     QGraphicsScene *scene;
 
+    QTimer timer;
+
     BoardView boardView;
     Controller controller;
-
-public:
-    int timer; //simulation in miliseconds
 
 public slots:
     void sliderMoved(int);
@@ -37,6 +37,7 @@ public slots:
     void manualPressed();
     void nextPressed();
     void resetPressed();
+    void automaticMove();
 
 public:
     explicit ChessWindow(std::vector<LogList> &log, QWidget *parent = nullptr);

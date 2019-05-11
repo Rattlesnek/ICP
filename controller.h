@@ -35,8 +35,8 @@ public:
     void addLog(State figure, int x_start, int y_start,
                 int x_end, int y_end, State kick, State swap);
 
-    void back();
-    void next();
+    bool back();
+    bool next();
     void reset();
 
     void printLog();

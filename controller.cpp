@@ -94,22 +94,23 @@ void Controller::addLog(State figure, int row_start, int col_start, int row_end,
     qDebug() << "size: " << log.size() << " index " << index;
 }
 
-void Controller::back()
+bool Controller::back()
 {
     deactivateAllFields();
 
     if (index-1 < 0) {
-        return;
+        return false;
     }
     else {
         index--;
         executeOperation(true);
         qDebug() << "size: " << log.size() << " back " << index;
+        return true;
     }
 }
 
 
-void Controller::next()
+bool Controller::next()
 {
     qDebug() << "Next()";
 
@@ -118,12 +119,13 @@ void Controller::next()
     deactivateAllFields();
 
     if (index == log.size()) {
-        return;
+        return false;
     }
     else {
         executeOperation(false);
         index++;
         qDebug() << "size: " << log.size() << " next " << index;
+        return true;
     }
 }
 
