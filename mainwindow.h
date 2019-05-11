@@ -17,6 +17,9 @@
 #include <vector>
 #include <QTextEdit>
 #include <QTextEdit>
+#include <QMessageBox>
+
+#define FAIL 100 //if regex does not match any string
 
 namespace Ui {
 class MainWindow;
@@ -36,13 +39,16 @@ public slots:
     void newChessWindow();
     void deleteChessWindow();
     void loadChessWindow();
+    int stringVersion(QString s);
     void saveChessWindow();
 
 
 private:
     Ui::MainWindow *ui;
 
-    void insertToLog(std::vector<LogList> &log, QString str, bool isPawn, bool isWhite);
+    void insertLongToLog(std::vector<LogList> &log, QString str, bool isPawn, bool isWhite);
+    void insertShortToLog(std::vector<LogList> &log, QString str, bool isPawn, bool isWhite);
+    void errorMassage(QString error);
 };
 
 #endif // MAINWINDOW_H
