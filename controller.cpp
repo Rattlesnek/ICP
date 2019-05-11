@@ -91,28 +91,68 @@ Figure *Controller::figureFactory(State state)
     }
 }
 
+bool Controller::whiteOnMove()
+{
+    return index % 2 == 0;
+}
+
 void Controller::executeOperation(bool backward)
 {
-    LogList list = log[index];
+    LogList &list = log[index];
 
-    Field *from = board.getField(list.row_start, list.col_start);
+    Field *from;
     Field *to = board.getField(list.row_end, list.col_end);
+
+    if (list.row_start != 0 && list.col_start != 0) {
+        // long notation
+        from = board.getField(list.row_start, list.col_start);
+    }
+    else {
+        // short notation
+        from = findFieldOfMovedFigure(list.figure, to);
+        if (from == nullptr) {
+            deleteFollowingLogs();
+            qDebug() << "INCORECT RECORD - SHORT NOTATION";
+            return;
+        }
+        list.row_start = from->row;
+        list.col_start = from->col;
+    }
+
 
     qDebug() << "from " << from->row << ' ' << from->col;
     qDebug() << "to " << to->row << ' ' << to->col;
 
     if (backward) {
+        // BACKWARD
         emit signalMoveDelete(); //delete last line
 
-        Figure *fig = figureFactory(list.kick);
+        // also solves when no fig was kicked
+        Figure *kickedFig = figureFactory(list.kick);
         to->moveFig(from);
-        to->put(fig);
+        to->put(kickedFig);
     }
     else {
+        // FORWARD
+        Figure *movedFig = from->getFig();
+        // check if the move is possible
+        if (movedFig != nullptr && movedFig->getType() == list.figure && // check if there is figure of given type
+                (( movedFig->isWhite() && whiteOnMove() ) || ( ! movedFig->isWhite() && ! whiteOnMove() )) && // check if the correct player is on move
+                movedFig->checkMove(from, to) ) { // check if the move can be done
+            ; // correct
+        }
+        else {
+            // incorect record
+            deleteFollowingLogs();
+            qDebug() << "INCORECT RECORD";
+            return;
+        }
+
         emit signalMoveWrite(from, to, empty); //print out
 
         Figure *kickedFig = from->moveFig(to);
         if (kickedFig != nullptr) {
+            list.kick = kickedFig->getType();
             delete kickedFig;
         }
     }
@@ -120,6 +160,22 @@ void Controller::executeOperation(bool backward)
     applyStateOfField(to);
     applyStateOfField(from);
 
+}
+
+Field *Controller::findFieldOfMovedFigure(State type, Field *to)
+{
+    for (int i = 1; i <= Board::size; i++) {
+        for (int j = 1; j <= Board::size; j++) {
+            Field *from = board.getField(i, j);
+            Figure *fig = from->getFig();
+            if (fig != nullptr && fig->getType() == type  &&
+                    (( fig->isWhite() && whiteOnMove() ) || ( ! fig->isWhite() && ! whiteOnMove() )) &&
+                    fig->checkMove(from, to) ) {
+                return from;
+            }
+        }
+    }
+    return nullptr;
 }
 
 void Controller::addLog(State figure, int row_start, int col_start, int row_end, int col_end, State kick, State swap)
@@ -136,6 +192,12 @@ void Controller::addLog(State figure, int row_start, int col_start, int row_end,
 
     if (kingCheck(true)) //true --- white plays
         qDebug() << "WHITE: check";
+}
+
+void Controller::deleteFollowingLogs()
+{
+    index--;
+    log.erase(log.begin() + index, log.end());
 }
 
 bool Controller::back()
@@ -199,7 +261,7 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
 
     if (fieldReady == nullptr) {
         // no field is ready to move
-        if (fig != nullptr) {
+        if (fig != nullptr && (( fig->isWhite() && whiteOnMove() ) || ( ! fig->isWhite() && ! whiteOnMove() )) ) {
             // store field that is ready -- figure is ready to move
             fieldReady = field;
 

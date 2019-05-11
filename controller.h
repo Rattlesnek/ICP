@@ -30,15 +30,18 @@ public:
     void applyStateOfField(Field *field);
     Figure *figureFactory(State state);
 
-
+    bool whiteOnMove();
     void executeOperation(bool backward);
+    Field *findFieldOfMovedFigure(State type, Field *to);
 
     void addLog(State figure, int x_start, int y_start,
                 int x_end, int y_end, State kick, State swap);
+    void deleteFollowingLogs();
 
     bool back();
     bool next();
     void reset();
+
 
     void printLog();
 
