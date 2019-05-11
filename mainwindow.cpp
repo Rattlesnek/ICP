@@ -33,12 +33,18 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::errorMassage(QString error)
+{
+    QMessageBox messageBox;
+    messageBox.critical(nullptr, "Error massage", error);
+    messageBox.setFixedSize(500,200);
+}
+
 void MainWindow::newChessWindow()
 {
-    counter++;
+    counter++; //increase total number of chess window
 
     std::vector<LogList> log;
-
     ChessWindow *chessWindowDialog = new ChessWindow(log, this);
     chessWindowDialog->show();
 
@@ -53,10 +59,9 @@ void MainWindow::deleteChessWindow()
 
 void MainWindow::loadChessWindow()
 {
-    counter++;
+    counter++; //increase total number of chess window
 
     std::vector<LogList> log;
-
     bool ok;
     QString file = QInputDialog::getText(this, tr("Load"), tr("Enter name of file:"),
                                             QLineEdit::Normal, QString(), &ok);
@@ -69,10 +74,11 @@ void MainWindow::loadChessWindow()
         QFile fp(check_file.filePath());
         if (!fp.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-                qDebug() << "ERROR: open file";
+                errorMassage("open file: " + check_file.filePath());
                 return ;
         }
 
+        int line_counter = 1;
         // read file
         while (!fp.atEnd())
         {
@@ -82,45 +88,62 @@ void MainWindow::loadChessWindow()
 
             if (words.length() != 3)
             {
-                qDebug() << "ERROR: wrong format (missing 3 words in line)";
-                continue; // TODO
+                errorMassage("wrong format (except 3 words in every line), line: " + QString::number(line_counter));
+                return ;
             }
 
-            QRegExp expr("[1-9][0-9]*.");
+            QRegExp expr("[1-9][0-9]*."); //TODO --- check if it increase and nothing missing
             if (!expr.exactMatch(words[0]))
             {
-                    qDebug() << "ERROR: first word" << words[0] << "does not match '[1-9][0-9]*.'";
+                errorMassage("first word does not match, line: " + QString::number(line_counter));
+                return ;
             }
-
-            QRegExp expr_pawn("([a-h][1-8]x?[a-h][1-8][K|D|V|S|J]?[#|+]?)");
-            QRegExp expr_others("([K|D|V|S|J][a-h][1-8]x?[a-h][1-8][#|+]?)");
 
             //move of white player
-            bool isPawn = true;
-            if (!expr_pawn.exactMatch(words[1]))
+            switch (stringVersion(words[1]))
             {
-                    if (!expr_others.exactMatch(words[1]))
-                        qDebug() << "ERROR: nd word" << words[1] << "does not match";
-                    else
-                        isPawn = false;
+            case 0:
+                insertLongToLog(log, words[1], true, true);
+                break;
+            case 1:
+                insertLongToLog(log, words[1], false, true);
+                break;
+            case 2:
+                insertShortToLog(log, words[1], true, true);
+                break;
+            case 3:
+                insertShortToLog(log, words[1], false, true);
+                break;
+            default:
+                errorMassage("second word does not match, line: " + QString::number(line_counter));
+                return ;
             }
-            insertToLog(log, words[1], isPawn, true);
 
             //move of black player
-            isPawn = true;
-            if (!expr_pawn.exactMatch(words[2]))
+            switch (stringVersion(words[2]))
             {
-                if (!expr_others.exactMatch(words[2]))
-                    qDebug() << "ERROR: rd word" << words[2] << "does not match";
-                else
-                    isPawn = false;
+            case 0:
+                insertLongToLog(log, words[2], true, false);
+                break;
+            case 1:
+                insertLongToLog(log, words[2], false, false);
+                break;
+            case 2:
+                insertShortToLog(log, words[2], true, false);
+                break;
+            case 3:
+                insertShortToLog(log, words[2], false, false);
+                break;
+            default:
+                errorMassage("third word does not match, line: " + QString::number(line_counter));
+                return ;
             }
-                insertToLog(log, words[2], isPawn, true);
+            line_counter++;
         }
     }
     else
     {
-        qDebug() << file << " --- file does not exist!";
+        errorMassage("file: " + check_file.filePath() + " does not exist");
         return ;
     }
 
@@ -131,12 +154,30 @@ void MainWindow::loadChessWindow()
     ui->tabWidget->setCurrentIndex(ui->tabWidget->count()-1);
 }
 
-void MainWindow::insertToLog(std::vector<LogList> &log, QString str, bool isPawn, bool isWhite)
+int MainWindow::stringVersion(QString s)
 {
-    int x_start;
-    int y_start;
-    int x_end;
-    int y_end;
+    QRegExp long_expr_pawn("([a-h][1-8]x?[a-h][1-8][K|D|V|S|J]?[#|+]?)");
+    QRegExp long_expr_others("([K|D|V|S|J][a-h][1-8]x?[a-h][1-8][#|+]?)");
+
+    if (long_expr_pawn.exactMatch(s))
+        return 0;
+    if (long_expr_others.exactMatch(s))
+        return 1;
+
+    QRegExp short_expr_pawn("([1-8]|[a-h])?x?[a-h][1-8][K|D|V|S|J]?[#|+]?");
+    QRegExp short_expr_others("[K|D|V|S|J]([1-8]|[a-h])?x?[a-h][1-8][#|+]?");
+    if (short_expr_pawn.exactMatch(s))
+        return 2;
+    if (short_expr_others.exactMatch(s))
+        return 3;
+
+    return FAIL;
+}
+
+
+void MainWindow::insertLongToLog(std::vector<LogList> &log, QString str, bool isPawn, bool isWhite)
+{
+    int x_start, y_start, x_end, y_end;
 
     State figure = isWhite ? wPawn : bPawn;
     if (!isPawn)
@@ -161,44 +202,107 @@ void MainWindow::insertToLog(std::vector<LogList> &log, QString str, bool isPawn
     y_start = str[1].digitValue();
 
     //check if 'x' is string
-    State kick = empty;
     if (str.contains('x'))
-    {
         str.remove(3, 1);
-        kick = wPawn; //temporary value
-    }
 
     //get end coordinates
     x_end = str[2].toLatin1() - int('a') + 1;
     y_end = str[3].digitValue();
 
-    if (kick != empty)
+    State swap = empty;
+    if (isPawn)
     {
-       ; //TODO
+        QRegExp swap_expr("[K|D|V|S|J][+|#]?");
+        if (swap_expr.exactMatch(str.mid(4, str.length())))
+        {
+            QChar c = str[4];
+            if (c == 'K')
+                swap = isWhite ? wKing : bKing;
+            else if (c == 'D')
+                swap = isWhite ? wQueen : bQueen;
+            else if (c == 'V')
+                swap = isWhite ? wRook : bRook;
+            else if (c == 'S')
+                swap = isWhite ? wBishop : bBishop;
+            else if (c == 'J')
+                swap = isWhite ? wKnight : bKnight;
+        }
     }
+
+    log.push_back(LogList(figure, y_start, x_start, y_end, x_end, empty, swap));
+}
+
+void MainWindow::insertShortToLog(std::vector<LogList> &log, QString str, bool isPawn, bool isWhite)
+{
+    int x_start = 0, y_start = 0, x_end, y_end; //0 means uknown
+
+    State figure = isWhite ? wPawn : bPawn;
+    if (!isPawn)
+    {
+        QChar c = str[0];
+        if (c == 'K')
+            figure = isWhite ? wKing : bKing;
+        else if (c == 'D')
+            figure = isWhite ? wQueen : bQueen;
+        else if (c == 'V')
+            figure = isWhite ? wRook : bRook;
+        else if (c == 'S')
+            figure = isWhite ? wBishop : bBishop;
+        else if (c == 'J')
+            figure = isWhite ? wKnight : bKnight;
+
+        str.remove(0, 1);
+    }
+
+    //check if the log string has hint
+    QRegExp hint("([a-h]|[1-8])[a-h][1-8]");
+    if (hint.exactMatch(str.mid(0,3)))
+    {
+        if (str[0].isDigit())
+            y_start = str[0].digitValue();
+        else
+            x_start = str[0].toLatin1() - int('a') + 1;
+
+        str.remove(0, 1);
+    }
+
+    //check if 'x' is string
+    if (str.contains('x'))
+        str.remove(0, 1);
+
+    qDebug() << str;
+
+    //get end coordinates
+    x_end = str[0].toLatin1() - int('a') + 1;
+    y_end = str[1].digitValue();
+
+    qDebug() << y_end << x_end;
 
     State swap = empty;
     if (isPawn)
     {
-        if (str.length() == 5)
+        QRegExp swap_expr("[K|D|V|S|J][+|#]?");
+        if (swap_expr.exactMatch(str.mid(3, str.length())))
         {
-            QChar c = str[4];
+            QChar c = str[3];
             if (c == 'K')
-                figure = isWhite ? wKing : bKing;
+                swap = isWhite ? wKing : bKing;
             else if (c == 'D')
-                figure = isWhite ? wQueen : bQueen;
+                swap = isWhite ? wQueen : bQueen;
             else if (c == 'V')
-                figure = isWhite ? wRook : bRook;
+                swap = isWhite ? wRook : bRook;
             else if (c == 'S')
-                figure = isWhite ? wBishop : bBishop;
+                swap = isWhite ? wBishop : bBishop;
             else if (c == 'J')
-                figure = isWhite ? wKnight : bKnight;
+                swap = isWhite ? wKnight : bKnight;
         }
     }
 
-    //qDebug() << x_start << y_start << x_end << y_end;
-    log.push_back(LogList(figure, y_start, x_start, y_end, x_end, kick, swap));
+    log.push_back(LogList(figure, y_start, x_start, y_end, x_end, empty, swap));
+
+
 }
+
 
 //TODO -- create new fiel if does not exist and rewrite if file exists
 void MainWindow::saveChessWindow()

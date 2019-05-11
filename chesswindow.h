@@ -35,8 +35,6 @@ class ChessWindow : public QWidget
     static QString nameFig(State s);
     static QChar numToCharInd(int a);
 
- //   static void writeMove(Field *from, Field *to, State swap);
-
 public slots:
     void sliderMoved(int);
     void automaticPressed();
