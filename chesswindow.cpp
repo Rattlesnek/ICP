@@ -146,6 +146,7 @@ void ChessWindow::nextPressed()
 void ChessWindow::resetPressed()
 {
     qDebug() << "resetPressed()";
+    controller.reset();
 }
 
 void ChessWindow::automaticMove()

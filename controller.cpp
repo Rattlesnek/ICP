@@ -19,12 +19,11 @@ void Controller::loadInitialState()
 {
     for (auto field : board.board) {
         Figure *fig = field->getFig();
-        if (fig == nullptr) {
-            continue;
+        State state = empty;
+        if (fig != nullptr) {
+            state = fig->getType();
         }
-
-        State stt = fig->getType();
-        boardView->setStateFieldView(stt, field->row, field->col);
+        boardView->setStateFieldView(state, field->row, field->col);
     }
 }
 
@@ -135,6 +134,18 @@ bool Controller::next()
 
     qDebug() << "... end";
 
+}
+
+void Controller::reset()
+{
+    deactivateAllFields();
+    board.setInitialState();
+    loadInitialState();
+
+    index = 0;
+    log.clear();
+
+    fieldReady = nullptr;
 }
 
 
