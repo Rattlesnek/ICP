@@ -17,6 +17,7 @@ public:
 
     Board();
     Field *getField(int row, int col);
+    Field *getField(State s);
     void setInitialState();
     void clearBoard();
 

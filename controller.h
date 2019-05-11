@@ -41,6 +41,8 @@ public:
 
     void printLog();
 
+    bool kingCheck(bool isWhite);
+
 public slots:
     void slotBoardViewPressed(int row, int col, bool active);
 
