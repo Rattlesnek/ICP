@@ -79,7 +79,7 @@ void ChessWindow::writeMove(Field *from, Field *to, State swap)
     int x_start = from->row;
     int y_start = from->col;
     int x_end = to->row;
-    int y_end = to->row;
+    int y_end = to->col;
 
     QString kick = "";
     if (to->getFig() != nullptr) //we must kick
