@@ -22,7 +22,7 @@ public:
     void preparePixmaps();
     void createBoard(QGraphicsScene *scene, double shift_down, double shift_right);
     FieldView *getFieldView(int row, int col);
-    void setActiveFieldView(bool active, int row, int col);
+    void setActiveFieldView(bool active, bool red, int row, int col);
     void setStateFieldView(State state, int row, int col);
 
 signals:

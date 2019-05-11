@@ -83,7 +83,7 @@ FieldView *BoardView::getFieldView(int row, int col)
     return fieldviews[(row - 1)*8 + (col - 1)];
 }
 
-void BoardView::setActiveFieldView(bool active, int row, int col)
+void BoardView::setActiveFieldView(bool active, bool red, int row, int col)
 {
     FieldView *fw = getFieldView(row, col);
     if (fw == nullptr) {
@@ -91,7 +91,7 @@ void BoardView::setActiveFieldView(bool active, int row, int col)
         return; // TODO Exception
     }
 
-    fw->setActive(active);
+    fw->setActive(active, red);
 }
 
 void BoardView::setStateFieldView(State state, int row, int col)

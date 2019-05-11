@@ -26,12 +26,12 @@ void Square::setOriginalColor(bool isWhite)
     }
 }
 
-void Square::setActive(bool isActive)
+void Square::setActive(bool isActive, bool red)
 {
     active = isActive;
 
     if (isActive) {
-        setColor(Qt::red);
+        setColor(red ? Qt::red :Qt::blue );
     }
     else {
         setOriginalColor(white);

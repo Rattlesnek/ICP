@@ -33,7 +33,7 @@ void Controller::activatePossibleMoveFields(Figure *fig, Field *from)
         for (int j = 1; j <= Board::size; j++) {
 
             if ( fig->checkMove(from, board.getField(i, j)) ) {
-                boardView->setActiveFieldView(true, i, j);
+                boardView->setActiveFieldView(true, true, i, j);
             }
         }
     }
@@ -43,7 +43,7 @@ void Controller::deactivateAllFields()
 {
     for (int i = 1; i <= Board::size; i++) {
         for (int j = 1; j <= Board::size; j++) {
-            boardView->setActiveFieldView(false, i, j);
+            boardView->setActiveFieldView(false, false, i, j);
         }
     }
 }
@@ -163,14 +163,15 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
         if (fig != nullptr) {
             // store field that is ready -- figure is ready to move
             fieldReady = field;
+
+            boardView->setActiveFieldView(true, false, fieldReady->row, fieldReady->col);
             // activate all possible fieldviews -- turn on red
             activatePossibleMoveFields(fig, field);
         }
     }
     else {
         // fieldReady is ready to move
-
-        if (active) { // TODO should it be like this ???????
+        if (fieldReady->getFig()->checkMove(fieldReady, field)) {
             // player clicked on active field
 
             // deactivate all fieldviews -- turn off red

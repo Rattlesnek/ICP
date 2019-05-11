@@ -65,9 +65,9 @@ State FieldView::getState()
     return state;
 }
 
-void FieldView::setActive(bool active)
+void FieldView::setActive(bool active, bool red)
 {
-    square->setActive(active);
+    square->setActive(active, red);
 }
 
 void FieldView::slotSquarePressed(bool active)

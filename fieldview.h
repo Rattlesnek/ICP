@@ -32,7 +32,7 @@ public:
     void addToScene(QGraphicsScene *scene);
     void setState(std::vector<QPixmap> &pixmaps, State _state);
     State getState();
-    void setActive(bool active);
+    void setActive(bool active, bool red);
 
 signals:
     void signalFieldViewPressed(int row, int col, bool active);

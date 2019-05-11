@@ -26,7 +26,7 @@ private:
 public:
     Square(bool isWhite);
     void setOriginalColor(bool isWhite);
-    void setActive(bool isActive);
+    void setActive(bool isActive, bool red);
     bool isActive();
 
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
