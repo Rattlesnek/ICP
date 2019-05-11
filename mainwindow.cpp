@@ -157,8 +157,8 @@ void MainWindow::insertToLog(std::vector<LogList> &log, QString str, bool isPawn
     }
 
     //get starting coordinates
-    x_start = str[1].toLatin1() - int('a') + 1;
-    y_start = str[2].digitValue();
+    x_start = str[0].toLatin1() - int('a') + 1;
+    y_start = str[1].digitValue();
 
     //check if 'x' is string
     State kick = empty;
@@ -169,8 +169,8 @@ void MainWindow::insertToLog(std::vector<LogList> &log, QString str, bool isPawn
     }
 
     //get end coordinates
-    x_end = str[3].toLatin1() - int('a') + 1;
-    y_end = str[4].digitValue();
+    x_end = str[2].toLatin1() - int('a') + 1;
+    y_end = str[3].digitValue();
 
     if (kick != empty)
     {
@@ -182,7 +182,7 @@ void MainWindow::insertToLog(std::vector<LogList> &log, QString str, bool isPawn
     {
         if (str.length() == 5)
         {
-            QChar c = str[5];
+            QChar c = str[4];
             if (c == 'K')
                 figure = isWhite ? wKing : bKing;
             else if (c == 'D')
@@ -196,9 +196,11 @@ void MainWindow::insertToLog(std::vector<LogList> &log, QString str, bool isPawn
         }
     }
 
+    //qDebug() << x_start << y_start << x_end << y_end;
     log.push_back(LogList(figure, y_start, x_start, y_end, x_end, kick, swap));
 }
 
+//TODO -- create new fiel if does not exist and rewrite if file exists
 void MainWindow::saveChessWindow()
 {
     qDebug() << "save()";

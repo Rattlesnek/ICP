@@ -47,7 +47,6 @@ Field *Board::getField(State s)
         }
     }
 
-    qDebug() << "aaaaaaaaaaaaaa";
     return nullptr;
 }
 

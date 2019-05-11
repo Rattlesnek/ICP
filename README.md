@@ -3,7 +3,7 @@ Chess app
 
 - sach [done]
 - mat
-- load [asi jo]
+- load [done]
 - zkracena notace
 - vypis moves do line editu [done]
 - manual + auto [done]
