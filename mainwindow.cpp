@@ -65,6 +65,8 @@ void MainWindow::loadChessWindow()
     bool ok;
     QString file = QInputDialog::getText(this, tr("Load"), tr("Enter name of file:"),
                                             QLineEdit::Normal, QString(), &ok);
+\
+    if (file == "") return ;
 
     QFileInfo check_file(file);
     check_file = check_file.absoluteFilePath();
@@ -307,6 +309,7 @@ void MainWindow::saveChessWindow()
     bool ok;
     QString file = QInputDialog::getText(this, tr("Save"), tr("Enter name of file:"),
                                             QLineEdit::Normal, QString(), &ok);
+    if (file == "") return ;
 
     QFileInfo check_file(file);
     check_file = check_file.absoluteFilePath();
