@@ -1,3 +1,9 @@
+/* Subject:  [ICP] The C++ Programming Language
+ *
+ * Author: Adam Pankuch (xpanku00.stud.fit.vutbr.cz)
+ *         David Miksanik (xmiksa05.stud.fit.vutbr.cz)
+ */
+
 #include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -208,7 +214,7 @@ void MainWindow::insertLongToLog(std::vector<LogList> &log, QString str, bool is
     State kick = empty;
     if (str.contains('x'))
     {
-        str.remove(3, 1);
+        str.remove(2, 1);
         kick = wPawn; //temporary value
     }
 

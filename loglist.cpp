@@ -1,3 +1,9 @@
+/* Subject:  [ICP] The C++ Programming Language
+ *
+ * Author: Adam Pankuch (xpanku00.stud.fit.vutbr.cz)
+ *         David Miksanik (xmiksa05.stud.fit.vutbr.cz)
+ */
+
 #include "loglist.h"
 
 LogList::LogList(State _figure, int _row_start, int _col_start,
