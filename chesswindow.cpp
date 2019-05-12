@@ -7,6 +7,8 @@
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
 #include <QDebug>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 
 #include <vector>
 
@@ -37,6 +39,18 @@ ChessWindow::ChessWindow(std::vector<LogList> &log, QWidget *parent) :
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+
+    ui->log2->setColumnWidth(0, 90);
+    ui->log2->setColumnWidth(1, 90);
+    //mark all row if is clicked only on columnv
+    ui->log2->setSelectionBehavior(QAbstractItemView::SelectRows);
+    bool player = true;
+    for (auto it : log)
+    {
+        writeMove(player, it.figure, it.row_start, it.col_start, it.row_end, it.col_end, it.kick, it.swap, it.kick);
+        player = player ? false : true;
+    }
+
     //get value of slider
     connect(ui->timer, SIGNAL(valueChanged(int)), this, SLOT(sliderMoved(int)));
 
@@ -51,8 +65,10 @@ ChessWindow::ChessWindow(std::vector<LogList> &log, QWidget *parent) :
     timer.setInterval(1000);
 
     connect(&controller, SIGNAL(signalMoveWrite(Field *, Field *, State, int)), this, SLOT(writeMove(Field *, Field *, State, int)));
-    connect(&controller, SIGNAL(signalCheckKing(int)), this, SLOT(writeCheckKing(int)));
-    connect(&controller, SIGNAL(signalMoveDelete()), this, SLOT(deleteMove()));
+    connect(&controller, SIGNAL(signalCheckKing(int, bool)), this, SLOT(writeCheckKing(int, bool)));
+    connect(&controller, SIGNAL(signalMoveDelete(int, std::vector<LogList>)), this, SLOT(deleteMove(int, std::vector<LogList>)));
+
+    connect(&controller, SIGNAL(signalMarkRow(int)), this, SLOT(markRow(int)));
 }
 
 QString ChessWindow::nameFig(State s)
@@ -67,13 +83,60 @@ QString ChessWindow::nameFig(State s)
         return "J";
     if (s == wKing || s == bKing)
         return "K";
+    if (s == wQueen || s == bQueen)
+        return "D";
 
-    return "D"; //otherwise it is queen
+    return "";
 }
 
 QChar ChessWindow::numToCharInd(int a)
 {
      return 'a' + (a - 1);
+}
+
+void ChessWindow::writeMove(int isWhite, State start, int x_start, int y_start, int x_end, int y_end, int kick, State swap, int check)
+{
+    QString figName = nameFig(start);
+    QString kickStr = "";
+    if (kick != empty)
+        kickStr = "x";
+    QString swapStr = nameFig(swap);
+
+    QString strCheck = "";
+    if (check == 1)
+        strCheck = "+";
+    else if (check == 2)
+        strCheck = "-";
+
+    qDebug() << x_start << y_start << x_end << y_end ;
+
+
+    QString strOut;
+    if (x_start != 0 && y_start != 0) {
+        // long notation
+        strOut = figName + numToCharInd(y_start) + QString::number(x_start) +
+            kickStr + numToCharInd(y_end) + QString::number(x_end) + swapStr + strCheck;
+    }
+    else {
+        // short notation
+        strOut = figName + kickStr + numToCharInd(y_end) + QString::number(x_end) + swapStr + strCheck;
+    }
+
+    int row = ui->log2->rowCount();
+    if (isWhite)
+    {
+        this->ui->log2->setRowCount(row + 1);
+        this->ui->log2->setItem(row, 0, new QTableWidgetItem(strOut));
+    }
+    else
+    {
+        this->ui->log2->setItem(row-1, 1, new QTableWidgetItem(strOut));
+    }
+}
+
+void ChessWindow::markRow(int row)
+{
+    ui->log2->selectRow(row);
 }
 
 
@@ -84,6 +147,8 @@ QChar ChessWindow::numToCharInd(int a)
  */
 void ChessWindow::writeMove(Field *from, Field *to, State swap, int check)
 {
+    bool isWhite = from->getFig()->isWhite();
+
     QString checkStr = "";
     if (check == 1)
         checkStr = "+";
@@ -106,12 +171,32 @@ void ChessWindow::writeMove(Field *from, Field *to, State swap, int check)
         swapStr = nameFig(swap);
     }
 
+    //output string
+    QString strOut = nameFig(from->getFig()->getType()) + numToCharInd(y_start) + QString::number(x_start) +
+            kick + numToCharInd(y_end) + QString::number(x_end) + swapStr + checkStr;
+
     //print out in long version
-    this->ui->log->append(nameFig(from->getFig()->getType()) + numToCharInd(y_start) + QString::number(x_start) +
-                          kick + numToCharInd(y_end) + QString::number(x_end) + swapStr + checkStr);
+    int row = ui->log2->rowCount();
+    if (isWhite)
+    {
+        this->ui->log2->setRowCount(row + 1);
+        this->ui->log2->setItem(row, 0, new QTableWidgetItem(strOut));
+        this->ui->log2->selectRow(row);
+    }
+    else
+    {
+        this->ui->log2->setItem(row-1, 1, new QTableWidgetItem(strOut));
+    }
+    //-------------------
+    qDebug() << "WRITEEEEEEEEEEEEE";
+
+
+    //print out in long version
+    //this->ui->log->append(nameFig(from->getFig()->getType()) + numToCharInd(y_start) + QString::number(x_start) +
+    //                      kick + numToCharInd(y_end) + QString::number(x_end) + swapStr + checkStr);
 }
 
-void ChessWindow::writeCheckKing(int check)
+void ChessWindow::writeCheckKing(int check, bool isWhite)
 {
     QString checkStr = "";
     if (check == 1)
@@ -119,9 +204,19 @@ void ChessWindow::writeCheckKing(int check)
     if (check == 2)
         checkStr = "#";
 
-    this->ui->log->moveCursor(QTextCursor::End);
-    this->ui->log->insertPlainText(checkStr);
-    this->ui->log->moveCursor(QTextCursor::End);
+//    this->ui->log->moveCursor(QTextCursor::End);
+//    this->ui->log->insertPlainText(checkStr);
+//    this->ui->log->moveCursor(QTextCursor::End);
+
+    //print out in long version
+    int row = ui->log2->rowCount();
+    if (isWhite)
+    {
+        this->ui->log2->item(row-1, 0)->setText( this->ui->log2->item(row-1, 0)->text() + checkStr );
+    }
+    else
+        this->ui->log2->item(row-1, 1)->setText( this->ui->log2->item(row-1, 1)->text() + checkStr );
+    //----------------------
 
     if (check == 2)
     {
@@ -131,17 +226,24 @@ void ChessWindow::writeCheckKing(int check)
     }
 }
 
-// https://stackoverflow.com/questions/15326569/removing-last-line-from-qtextedit
-void ChessWindow::deleteMove()
-{
-    this->ui->log->setFocus();
-    QTextCursor storeCursorPos = this->ui->log->textCursor();
-    this->ui->log->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-    this->ui->log->moveCursor(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
-    this->ui->log->moveCursor(QTextCursor::End, QTextCursor::KeepAnchor);
-    this->ui->log->textCursor().removeSelectedText();
-    this->ui->log->textCursor().deletePreviousChar();
-    this->ui->log->setTextCursor(storeCursorPos);
+
+void ChessWindow::deleteMove(int size, std::vector<LogList> log)
+{    
+    int row = this->ui->log2->rowCount()-1;
+
+    if (size == 0 || row == -1)
+        return ;
+
+    // delete all
+    ui->log2->setRowCount(0);
+
+    // load all
+    bool player = true;
+    for (auto it : log)
+    {
+        writeMove(player, it.figure, it.row_start, it.col_start, it.row_end, it.col_end, it.kick, it.swap, it.kick);
+        player = ! player; // switch whose turn it is
+    }
 }
 
 void ChessWindow::sliderMoved(int value)
@@ -178,6 +280,7 @@ void ChessWindow::resetPressed()
 {
     qDebug() << "resetPressed()";
     controller.reset();
+    this->ui->log2->setRowCount(0);
 }
 
 void ChessWindow::automaticMove()

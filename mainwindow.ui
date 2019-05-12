@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Chess</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -40,7 +40,7 @@
      <x>0</x>
      <y>0</y>
      <width>867</width>
-     <height>26</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

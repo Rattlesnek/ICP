@@ -116,6 +116,7 @@ void Controller::executeOperation(bool backward)
             deleteFollowingLogs();
             qDebug() << "INCORECT RECORD - SHORT NOTATION";
             errorMessage("Incorrect record!");
+            emit signalMoveDelete(10, log);
             return;
         }
         list.row_start = from->row;
@@ -126,9 +127,10 @@ void Controller::executeOperation(bool backward)
     qDebug() << "from " << from->row << ' ' << from->col;
     qDebug() << "to " << to->row << ' ' << to->col;
 
+    emit signalMarkRow(index/2);
     if (backward) {
         // BACKWARD
-        emit signalMoveDelete(); //delete last line
+        //emit signalMoveDelete(player); //delete last line
 
         // also solves when no fig was kicked
         Figure *kickedFig = figureFactory(list.kick);
@@ -158,10 +160,9 @@ void Controller::executeOperation(bool backward)
             deleteFollowingLogs();
             qDebug() << "INCORECT RECORD";
             errorMessage("Incorrect record!");
+            emit signalMoveDelete(10, log);
             return;
         }
-
-        emit signalMoveWrite(from, to, empty, 0); //print out
 
         Figure *kickedFig = from->moveFig(to);
         if (kickedFig != nullptr) {
@@ -183,12 +184,10 @@ void Controller::executeOperation(bool backward)
             if (kingMate(!player))
                 check = 2;
         }
-        emit signalCheckKing(check);
     }
 
     applyStateOfField(to);
     applyStateOfField(from);
-
 }
 
 Field *Controller::findFieldOfMovedFigure(State type, Field *to)
@@ -209,18 +208,28 @@ Field *Controller::findFieldOfMovedFigure(State type, Field *to)
 
 void Controller::addLog(State figure, int row_start, int col_start, int row_end, int col_end, State kick, State swap)
 {
+
+    int del = log.size() - index;
+    qDebug() << "ADD LOOOOOG"<<del;
+
     if (index < log.size()) {
         log.erase(log.begin() + index, log.end());
     }
+
+
 
     // if index points to the end of loglist then normally add new loglist and increment index
     log.push_back(LogList(figure, row_start, col_start, row_end, col_end, kick, swap));
     index++;
 
+    if (del != 0)
+        emit signalMoveDelete(del, log);
+
     qDebug() << "size: " << log.size() << " index " << index;
 
     if (kingCheck(true)) //true --- white plays
         qDebug() << "WHITE: check";
+
 }
 
 void Controller::deleteFollowingLogs()
@@ -344,7 +353,7 @@ void Controller::slotBoardViewPressed(int row, int col, bool active)
                 if (kingMate(!player))
                     check = 2;
             }
-            emit signalCheckKing(check);
+            emit signalCheckKing(check, player);
 
             addLog(movedFigType, fieldReady->row, fieldReady->col, field->row, field->col, kickedFigType, swapFigType);
 

@@ -7,7 +7,9 @@
 #include <QBrush>
 #include <QGraphicsRectItem>
 
-
+/**
+ * @brief The Square class represents the graphic square
+ */
 class Square : public QObject, public QGraphicsRectItem
 {
     Q_OBJECT
@@ -21,17 +23,49 @@ public:
 
 
 private:
+    /**
+     * @brief setColor method sets color of square
+     * @param color
+     */
     void setColor(QColor color);
 
 public:
+    /**
+     * @brief Square constructor
+     * @param isWhite whether the square is white or black
+     */
     Square(bool isWhite);
+
+    /**
+     * @brief setOriginalColor method sets square to either white or black color
+     * @param isWhite whether the square should be white or black
+     */
     void setOriginalColor(bool isWhite);
+
+    /**
+     * @brief setActive method changes the color of square according to isActive
+     * @param isActive whether the square should be activated
+     * @param red whether the square should be red
+     */
     void setActive(bool isActive, bool red);
+
+    /**
+     * @brief isActive method returns true of square is active
+     * @return true if square is active, false otherwise
+     */
     bool isActive();
 
+    /**
+     * @brief mousePressEvent event when mouse clicked on square
+     * @param event
+     */
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 signals:
+    /**
+     * @brief signalSquarePressed signal emited when mouse clicked on square
+     * @param active whether the square is active
+     */
     void signalSquarePressed(bool active);
 
 };

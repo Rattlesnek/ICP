@@ -21,9 +21,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction *loadChessAction = ui->menuBar->addAction("Load");
     connect(loadChessAction, SIGNAL(triggered()), this, SLOT(loadChessWindow()));
 
-    QAction *saveChessAction = ui->menuBar->addAction("Save");
+    /*QAction *saveChessAction = ui->menuBar->addAction("Save");
     connect(saveChessAction, SIGNAL(triggered()), this, SLOT(saveChessWindow()));
-
+*/
     QAction *deleteChessAction = ui->menuBar->addAction("Delete");
     connect(deleteChessAction, SIGNAL(triggered()), this, SLOT(deleteChessWindow()));
 }
@@ -205,8 +205,12 @@ void MainWindow::insertLongToLog(std::vector<LogList> &log, QString str, bool is
     y_start = str[1].digitValue();
 
     //check if 'x' is string
+    State kick = empty;
     if (str.contains('x'))
+    {
         str.remove(3, 1);
+        kick = wPawn; //temporary value
+    }
 
     //get end coordinates
     x_end = str[2].toLatin1() - int('a') + 1;
@@ -232,7 +236,7 @@ void MainWindow::insertLongToLog(std::vector<LogList> &log, QString str, bool is
         }
     }
 
-    log.push_back(LogList(figure, y_start, x_start, y_end, x_end, empty, swap));
+    log.push_back(LogList(figure, y_start, x_start, y_end, x_end, kick, swap));
 }
 
 void MainWindow::insertShortToLog(std::vector<LogList> &log, QString str, bool isPawn, bool isWhite)
@@ -304,7 +308,7 @@ void MainWindow::insertShortToLog(std::vector<LogList> &log, QString str, bool i
     log.push_back(LogList(figure, y_start, x_start, y_end, x_end, empty, swap));
 }
 
-void MainWindow::saveChessWindow()
+/*void MainWindow::saveChessWindow()
 {
     bool ok;
     QString file = QInputDialog::getText(this, tr("Save"), tr("Enter name of file:"),
@@ -343,3 +347,4 @@ void MainWindow::saveChessWindow()
      else
             qDebug() << "Internal Error!"; //probably never happaned
 }
+*/
